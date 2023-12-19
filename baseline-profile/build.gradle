@@ -15,12 +15,10 @@ android {
 
     targetProjectPath = ":"
 
-    flavorDimensions += ["app", "recents", "channel"]
+    flavorDimensions += ["app", "recents"]
     productFlavors {
         lawn { dimension = "app" }
         withQuickstep { dimension = "recents" }
-        github { dimension = "channel" }
-        market { dimension = "channel" }
     }
 
     testOptions.managedDevices.devices {
