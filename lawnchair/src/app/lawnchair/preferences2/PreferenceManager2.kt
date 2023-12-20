@@ -143,6 +143,15 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         defaultValue = context.resources.getBoolean(R.bool.config_default_themed_hotseat_qsb),
     )
 
+    val isHotseatEnabled = preference(
+        key = booleanPreferencesKey(name = "pref_show_hotseat"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_show_hotseat),
+        onSet = {
+            reloadHelper.recreate()
+            reloadHelper.reloadGrid()
+        },
+    )
+
     val hotseatQsbProvider = preference(
         key = stringPreferencesKey(name = "dock_search_bar_provider"),
         defaultValue = QsbSearchProvider.resolveDefault(context),
@@ -359,7 +368,6 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
     val enableFeed = preference(
         key = booleanPreferencesKey(name = "enable_feed"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_enable_feed),
-        onSet = { reloadHelper.recreate() },
     )
 
     val showComponentNames = preference(
