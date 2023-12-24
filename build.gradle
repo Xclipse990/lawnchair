@@ -202,6 +202,12 @@ android {
         "META-INF/LGPL2.1",
     ]
 
+    // Load all proguard configs from AOSP
+    def proguardFilesFromAosp = allprojects
+        .collect { it.file("proguard.flags") }
+        .findAll { it.exists() }
+        .toArray()
+
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
@@ -214,7 +220,7 @@ android {
             signingConfig releaseSigning
             minifyEnabled true
             shrinkResources true
-            proguardFiles "proguard.flags", "proguard.pro"
+            proguardFiles proguardFilesFromAosp + "proguard.pro"
         }
     }
 

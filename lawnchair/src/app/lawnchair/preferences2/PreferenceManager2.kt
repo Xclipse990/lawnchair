@@ -176,7 +176,7 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
     val hiddenApps = preference(
         key = stringSetPreferencesKey(name = "hidden_apps"),
         defaultValue = setOf(),
-        onSet = { reloadHelper.recreate() },
+        onSet = { reloadHelper.reloadGrid() },
     )
 
     val roundedWidgets = preference(
@@ -221,13 +221,13 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
     val hideAppDrawerSearchBar = preference(
         key = booleanPreferencesKey(name = "hide_app_drawer_search_bar"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_hide_app_drawer_search_bar),
-        onSet = { reloadHelper.recreate() },
+        onSet = { reloadHelper.reloadGrid() },
     )
 
     val showHiddenAppsInSearch = preference(
         key = booleanPreferencesKey(name = "show_hidden_apps_in_search"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_show_hidden_apps_in_search),
-        onSet = { reloadHelper.recreate() },
+        onSet = { reloadHelper.reloadGrid() },
     )
 
     val enableSmartHide = preference(
@@ -294,6 +294,12 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         onSet = { reloadHelper.reloadGrid() },
     )
 
+    val showIconLabelsOnHomeScreenFolder = preference(
+        key = booleanPreferencesKey(name = "show_icon_labels_on_home_screen_folder"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_show_icon_labels_on_home_screen),
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
     val drawerIconSizeFactor = preference(
         key = floatPreferencesKey(name = "drawer_icon_size_factor"),
         defaultValue = resourceProvider.getFloat(R.dimen.config_default_drawer_icon_size_factor),
@@ -309,6 +315,12 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
     val homeIconLabelSizeFactor = preference(
         key = floatPreferencesKey(name = "home_icon_label_size_factor"),
         defaultValue = resourceProvider.getFloat(R.dimen.config_default_home_icon_label_size_factor),
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
+    val homeIconLabelFolderSizeFactor = preference(
+        key = floatPreferencesKey(name = "home_icon_label_folder_size_factor"),
+        defaultValue = resourceProvider.getFloat(R.dimen.config_default_home_icon_label_folder_size_factor),
         onSet = { reloadHelper.reloadGrid() },
     )
 
