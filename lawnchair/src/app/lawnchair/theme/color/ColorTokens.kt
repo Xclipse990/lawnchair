@@ -93,13 +93,13 @@ object ColorTokens {
 
     @JvmField val DotColor = Accent3_200
 
-    @JvmField val FolderBackgroundColor = DayNightColorToken(Neutral1_50.setLStar(98.0), Neutral2_50.setLStar(30.0))
+    @JvmField val FolderBackgroundColor = DayNightColorToken(Neutral1_50, Neutral2_900)
 
     @JvmField val FolderIconBorderColor = ColorPrimary
 
     @JvmField val FolderPaginationColor = DayNightColorToken(Accent1_600, Accent2_100)
 
-    @JvmField val FolderPreviewColor = DayNightColorToken(Accent2_50.setLStar(80.0), Accent2_50.setLStar(30.0))
+    @JvmField val FolderPreviewColor = DayNightColorToken(Neutral1_50, Neutral2_900)
 
     @JvmField val PopupColorPrimary = DayNightColorToken(Accent2_50, Neutral2_800)
 
