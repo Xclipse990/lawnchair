@@ -119,7 +119,7 @@ object ColorTokens {
 
     @JvmField val QsbIconTintTertiary = DayNightColorToken(Accent2_300, Accent1_10)
 
-    @JvmField val QsbIconTintQuaternary = DayNightColorToken(Accent1_600, Accent1_100)
+    @JvmField val QsbIconTintQuaternary = DayNightColorToken(Accent1_600, Accent1_200)
 
     @JvmField val WallpaperPopupScrim = Neutral1_900
 
