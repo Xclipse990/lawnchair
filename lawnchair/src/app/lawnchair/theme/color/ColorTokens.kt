@@ -38,6 +38,7 @@ object ColorTokens {
 
     val Accent2_50 = SwatchColorToken(Swatch.Accent2, Shade.S50)
     val Accent2_100 = SwatchColorToken(Swatch.Accent2, Shade.S100)
+    val Accent2_200 = SwatchColorToken(Swatch.Accent2, Shade.S200)
     val Accent2_300 = SwatchColorToken(Swatch.Accent2, Shade.S300)
     val Accent2_500 = SwatchColorToken(Swatch.Accent2, Shade.S500)
     val Accent2_600 = SwatchColorToken(Swatch.Accent2, Shade.S600)
@@ -61,7 +62,7 @@ object ColorTokens {
 
     @JvmField val ColorBackground = DayNightColorToken(Neutral1_50, Neutral1_900)
 
-    @JvmField val ColorBackgroundFloating = DayNightColorToken(Neutral2_50, Neutral2_900)
+    @JvmField val ColorBackgroundFloating = DayNightColorToken(Neutral1_50, Neutral1_900)
 
     @JvmField val ColorPrimary = DayNightColorToken(Neutral1_50, Neutral1_900)
 
@@ -87,19 +88,19 @@ object ColorTokens {
             if (translucent) setAlpha(0.8f) else this
         }
 
-    @JvmField val SearchboxHighlight = DayNightColorToken(SurfaceVariantLight, Neutral1_800)
+    @JvmField val SearchboxHighlight = DayNightColorToken(Neutral1_10, Neutral1_800)
 
     @JvmField val FolderDotColor = Accent3_100
 
     @JvmField val DotColor = Accent3_200
 
-    @JvmField val FolderBackgroundColor = DayNightColorToken(Accent2_50, Accent2_800)
+    @JvmField val FolderBackgroundColor = DayNightColorToken(Neutral1_50, Neutral2_900)
 
     @JvmField val FolderIconBorderColor = ColorPrimary
 
     @JvmField val FolderPaginationColor = DayNightColorToken(Accent1_600, Accent2_100)
 
-    @JvmField val FolderPreviewColor = DayNightColorToken(Neutral1_50, Neutral1_800)
+    @JvmField val FolderPreviewColor = DayNightColorToken(Accent2_200, Neutral1_800)
 
     @JvmField val PopupColorPrimary = DayNightColorToken(Accent2_50, Neutral2_800)
 
