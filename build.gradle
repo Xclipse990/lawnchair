@@ -176,7 +176,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.8"
+        kotlinCompilerExtensionVersion = "1.5.9"
     }
 
     final def keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -410,7 +410,7 @@ dependencies {
     implementation 'com.github.ChickenHook:RestrictionBypass:2.2'
     implementation 'dev.rikka.tools.refine:runtime:4.4.0'
 
-    implementation platform("androidx.compose:compose-bom:2024.01.00")
+    implementation platform("androidx.compose:compose-bom:2024.02.00")
     implementation "androidx.compose.ui:ui"
     implementation "androidx.compose.ui:ui-util"
     debugImplementation "androidx.compose.ui:ui-tooling"
@@ -423,7 +423,7 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"
     implementation "androidx.activity:activity-compose:1.8.2"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0"
-    implementation "androidx.navigation:navigation-compose:2.7.6"
+    implementation "androidx.navigation:navigation-compose:2.7.7"
     implementation "androidx.palette:palette-ktx:1.0.0"
     implementation "androidx.slice:slice-core:1.1.0-alpha02"
     def accompanistVersion = '0.34.0'
