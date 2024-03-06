@@ -20,9 +20,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -44,7 +42,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.ui.preferences.about.acknowledgements.licensesGraph
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
@@ -217,7 +214,6 @@ fun NavGraphBuilder.aboutGraph(route: String) {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun About() {
     val context = LocalContext.current
@@ -246,13 +242,6 @@ fun About() {
                 text = BuildConfig.VERSION_DISPLAY_NAME,
                 style = MaterialTheme.typography.bodyLarge,
                 color = LocalContentColor.current.copy(alpha = ContentAlpha.medium),
-                modifier = Modifier.combinedClickable(
-                    onClick = {},
-                    onLongClick = {
-                        val commitUrl = "https://github.com/LawnchairLauncher/lawnchair/commit/${BuildConfig.COMMIT_HASH}"
-                        context.startActivity(Intent(Intent.ACTION_VIEW, commitUrl.toUri()))
-                    },
-                ),
             )
             Spacer(modifier = Modifier.requiredHeight(16.dp))
             Row(

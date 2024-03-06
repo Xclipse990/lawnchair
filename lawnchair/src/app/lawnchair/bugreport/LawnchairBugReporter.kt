@@ -95,7 +95,6 @@ class LawnchairBugReporter(private val context: Context) {
 
         private fun writeContents() = StringBuilder()
             .appendLine("version: ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})")
-            .appendLine("commit: ${BuildConfig.COMMIT_HASH}")
             .appendLine("build.brand: ${Build.BRAND}")
             .appendLine("build.device: ${Build.DEVICE}")
             .appendLine("build.display: ${Build.DISPLAY}")
