@@ -28,14 +28,13 @@ class LawnchairOverviewActionsView @JvmOverloads constructor(
 ) : OverviewActionsView<TaskOverlayFactoryImpl.OverlayUICallbacks>(context, attrs, defStyleAttr) {
 
     private val prefs = PreferenceManager.getInstance(context)
-
+    private val launcher: Launcher? = if (context.isDefaultLauncher()) Launcher.getLauncher(context) else null
     private lateinit var container: LinearLayout
     private lateinit var screenshotAction: Button
     private lateinit var shareAction: Button
     private lateinit var lensAction: Button
     private lateinit var clearAllAction: Button
     private lateinit var lockedAction: Button
-    val launcher: Launcher? = if (context.isDefaultLauncher()) Launcher.getLauncher(context) else null
     private var rv: RecentsView<Launcher, *>? = null
 
     private val lockedTaskStateLister = object : StateManager.StateListener<LauncherState> {
