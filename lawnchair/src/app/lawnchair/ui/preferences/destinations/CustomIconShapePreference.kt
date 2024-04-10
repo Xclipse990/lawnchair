@@ -12,18 +12,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.Icon
-import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.RadioButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material.icons.rounded.ContentCopy
 import androidx.compose.material.icons.rounded.ContentPaste
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,13 +38,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavGraphBuilder
 import app.lawnchair.icons.shape.IconCornerShape
 import app.lawnchair.icons.shape.IconShape
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.preferenceManager2
-import app.lawnchair.ui.AlertBottomSheetContent
-import app.lawnchair.ui.preferences.components.IconShapePreview
+import app.lawnchair.ui.ModalBottomSheetContent
 import app.lawnchair.ui.preferences.components.controls.getSteps
 import app.lawnchair.ui.preferences.components.controls.snapSliderValue
 import app.lawnchair.ui.preferences.components.layout.BottomSpacer
@@ -54,19 +50,16 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceDivider
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
-import app.lawnchair.ui.preferences.preferenceGraph
 import app.lawnchair.ui.util.LocalBottomSheetHandler
 import app.lawnchair.util.copyToClipboard
 import app.lawnchair.util.getClipboardContent
 import com.android.launcher3.R
 import kotlin.math.roundToInt
 
-fun NavGraphBuilder.customIconShapePreferenceGraph(route: String) {
-    preferenceGraph(route, { CustomIconShapePreference() })
-}
-
 @Composable
-private fun CustomIconShapePreference() {
+fun CustomIconShapePreference(
+    modifier: Modifier = Modifier,
+) {
     val preferenceManager2 = preferenceManager2()
 
     val customIconShapeAdapter = preferenceManager2.customIconShape.getAdapter()
@@ -81,6 +74,7 @@ private fun CustomIconShapePreference() {
 
     PreferenceLayout(
         label = stringResource(id = R.string.custom_icon_shape),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         bottomBar = {
             Column(
@@ -132,9 +126,11 @@ private fun CustomIconShapePreference() {
 @Composable
 private fun IconShapeCornerPreferenceGroup(
     selectedIconShape: IconShape,
+    modifier: Modifier = Modifier,
     onSelectedIconShapeChange: (IconShape) -> Unit,
 ) {
     PreferenceGroup(
+        modifier = modifier,
         heading = stringResource(id = R.string.color_sliders),
     ) {
         IconShapeCornerPreference(
@@ -187,11 +183,13 @@ private fun IconShapeCornerPreferenceGroup(
 @Composable
 private fun IconShapeClipboardPreferenceGroup(
     selectedIconShape: IconShape,
+    modifier: Modifier = Modifier,
     onSelectedIconShapeChange: (IconShape) -> Unit,
 ) {
     val context = LocalContext.current
     val importErrorMessage = stringResource(id = R.string.icon_shape_clipboard_import_error)
     PreferenceGroup(
+        modifier = modifier,
         heading = stringResource(id = R.string.clipboard),
     ) {
         ClipboardButton(
@@ -233,7 +231,7 @@ private fun ClipboardButton(
         description = { description?.let { Text(text = it) } },
         startWidget = {
             val tint = LocalContentColor.current
-            val contentAlpha = if (enabled) tint.alpha else ContentAlpha.disabled
+            val contentAlpha = if (enabled) tint.alpha else 0.38f
             val alpha by animateFloatAsState(targetValue = contentAlpha, label = "")
             Icon(
                 imageVector = imageVector,
@@ -299,8 +297,7 @@ private fun CornerSlider(
             ) {
                 Text(text = label)
                 CompositionLocalProvider(
-                    LocalContentAlpha provides ContentAlpha.medium,
-                    LocalContentColor provides MaterialTheme.colorScheme.onBackground,
+                    LocalContentColor provides MaterialTheme.colorScheme.onSurfaceVariant,
                 ) {
                     val valueText = stringResource(
                         id = R.string.n_percent,
@@ -337,7 +334,7 @@ private fun CornerSlider(
                     .clip(shape = MaterialTheme.shapes.small)
                     .clickable {
                         bottomSheetHandler.show {
-                            AlertBottomSheetContent(
+                            ModalBottomSheetContent(
                                 title = { Text(stringResource(id = R.string.icon_shape_corner)) },
                                 buttons = {
                                     OutlinedButton(onClick = { bottomSheetHandler.hide() }) {

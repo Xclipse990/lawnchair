@@ -20,9 +20,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavGraphBuilder
 import app.lawnchair.data.iconoverride.IconOverrideRepository
 import app.lawnchair.nexuslauncher.OverlayCallbackImpl
 import app.lawnchair.preferences.getAdapter
@@ -40,8 +40,6 @@ import app.lawnchair.ui.preferences.components.layout.DividerColumn
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
-import app.lawnchair.ui.preferences.preferenceGraph
-import app.lawnchair.ui.preferences.subRoute
 import app.lawnchair.util.collectAsStateBlocking
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -51,18 +49,17 @@ object HomeScreenRoutes {
     const val GRID = "grid"
 }
 
-fun NavGraphBuilder.homeScreenGraph(route: String) {
-    preferenceGraph(route, { HomeScreenPreferences() }) { subRoute ->
-        homeScreenGridGraph(route = subRoute(HomeScreenRoutes.GRID))
-    }
-}
-
 @Composable
-fun HomeScreenPreferences() {
+fun HomeScreenPreferences(
+    modifier: Modifier = Modifier,
+) {
     val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
     val scope = rememberCoroutineScope()
-    PreferenceLayout(label = stringResource(id = R.string.home_screen_label)) {
+    PreferenceLayout(
+        label = stringResource(id = R.string.home_screen_label),
+        modifier = modifier,
+    ) {
         val lockHomeScreenAdapter = prefs2.lockHomeScreen.getAdapter()
         PreferenceGroup(heading = stringResource(id = R.string.general_label)) {
             val addIconToHomeAdapter = prefs.addIconToHome.getAdapter()
@@ -114,7 +111,7 @@ fun HomeScreenPreferences() {
             val rows by prefs.workspaceRows.getAdapter()
             NavigationActionPreference(
                 label = stringResource(id = R.string.home_screen_grid),
-                destination = subRoute(name = HomeScreenRoutes.GRID),
+                destination = HomeScreenRoutes.GRID,
                 subtitle = stringResource(id = R.string.x_by_y, columns, rows),
             )
             DividerColumn {
@@ -221,10 +218,13 @@ fun HomeScreenPreferences() {
 }
 
 @Composable
-fun HomeScreenTextColorPreference() {
+fun HomeScreenTextColorPreference(
+    modifier: Modifier = Modifier,
+) {
     ListPreference(
         adapter = preferenceManager2().workspaceTextColor.getAdapter(),
         entries = ColorMode.entries(),
         label = stringResource(id = R.string.home_screen_text_color),
+        modifier = modifier,
     )
 }

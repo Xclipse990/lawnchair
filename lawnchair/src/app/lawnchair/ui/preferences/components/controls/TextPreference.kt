@@ -4,9 +4,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.requiredWidth
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.PreferenceAdapter
-import app.lawnchair.ui.AlertBottomSheetContent
+import app.lawnchair.ui.ModalBottomSheetContent
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.util.bottomSheetHandler
 
@@ -25,6 +25,7 @@ import app.lawnchair.ui.util.bottomSheetHandler
 fun TextPreference(
     adapter: PreferenceAdapter<String>,
     label: String,
+    modifier: Modifier = Modifier,
     enabled: Boolean = true,
     description: (String) -> String? = { it },
 ) {
@@ -35,6 +36,7 @@ fun TextPreference(
         label = label,
         description = description,
         enabled = enabled,
+        modifier = modifier,
     )
 }
 
@@ -43,6 +45,7 @@ fun TextPreference(
     value: String,
     onChange: (String) -> Unit,
     label: String,
+    modifier: Modifier = Modifier,
     enabled: Boolean = true,
     description: (String) -> String? = { it },
 ) {
@@ -50,7 +53,7 @@ fun TextPreference(
     PreferenceTemplate(
         title = { Text(text = label) },
         description = { description(value)?.let { Text(text = it) } },
-        modifier = Modifier
+        modifier = modifier
             .clickable(enabled) {
                 bottomSheetHandler.show {
                     TextPreferenceDialog(
@@ -71,9 +74,11 @@ fun TextPreferenceDialog(
     initialValue: String,
     onDismissRequest: () -> Unit,
     onConfirm: (String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     var value by remember { mutableStateOf(initialValue) }
-    AlertBottomSheetContent(
+    ModalBottomSheetContent(
+        modifier = modifier,
         title = { Text(text = title) },
         text = {
             OutlinedTextField(

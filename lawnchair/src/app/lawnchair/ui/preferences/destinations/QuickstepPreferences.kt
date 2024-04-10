@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavGraphBuilder
 import app.lawnchair.LawnchairApp
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.observeAsState
@@ -22,17 +21,14 @@ import app.lawnchair.ui.preferences.components.controls.WarningPreference
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
-import app.lawnchair.ui.preferences.preferenceGraph
 import app.lawnchair.util.isOnePlusStock
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
-fun NavGraphBuilder.quickstepGraph(route: String) {
-    preferenceGraph(route, { QuickstepPreferences() })
-}
-
 @Composable
-fun QuickstepPreferences() {
+fun QuickstepPreferences(
+    modifier: Modifier = Modifier,
+) {
     val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
     val context = LocalContext.current
@@ -42,7 +38,10 @@ fun QuickstepPreferences() {
 
     if (!LawnchairApp.isRecentsEnabled) QuickSwitchIgnoredWarning()
 
-    PreferenceLayout(label = stringResource(id = R.string.quickstep_label)) {
+    PreferenceLayout(
+        label = stringResource(id = R.string.quickstep_label),
+        modifier = modifier,
+    ) {
         PreferenceGroup(heading = stringResource(id = R.string.general_label)) {
             SwitchPreference(
                 adapter = prefs.recentsTranslucentBackground.getAdapter(),
@@ -105,9 +104,11 @@ fun QuickstepPreferences() {
 }
 
 @Composable
-fun QuickSwitchIgnoredWarning() {
+fun QuickSwitchIgnoredWarning(
+    modifier: Modifier = Modifier,
+) {
     Surface(
-        modifier = Modifier.padding(horizontal = 16.dp),
+        modifier = modifier.padding(horizontal = 16.dp),
         shape = MaterialTheme.shapes.large,
         color = androidx.compose.material3.MaterialTheme.colorScheme.errorContainer,
     ) {

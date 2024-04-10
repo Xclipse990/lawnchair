@@ -20,6 +20,7 @@ import app.lawnchair.ui.StretchEdgeEffect
 
 @Composable
 fun NestedScrollStretch(
+    modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
     val invalidateTick = remember { mutableIntStateOf(0) }
@@ -31,7 +32,7 @@ fun NestedScrollStretch(
     val tmpOut = remember { FloatArray(5) }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .nestedScroll(connection)
             .onSizeChanged {
                 connection.height = it.height

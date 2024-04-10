@@ -60,22 +60,30 @@ fun AnnouncementPreference() {
 @Composable
 fun AnnouncementPreference(
     announcements: ImmutableList<Announcement>,
+    modifier: Modifier = Modifier,
 ) {
-    Column {
-        announcements.forEach { announcement ->
-            AnnouncementItem(announcement)
-            Spacer(modifier = Modifier.height(16.dp))
+    Column(
+        modifier = modifier,
+    ) {
+        announcements.forEachIndexed { index, announcement ->
+            var show by remember { mutableStateOf(true) }
+            AnnouncementItem(show, announcement) { show = false }
+            if (index != announcements.lastIndex && show && (!announcement.test || BuildConfig.DEBUG)) {
+                Spacer(modifier = Modifier.height(16.dp))
+            }
         }
     }
 }
 
 @Composable
 private fun AnnouncementItem(
+    show: Boolean,
     announcement: Announcement,
+    modifier: Modifier = Modifier,
+    onClose: () -> Unit,
 ) {
-    var show by remember { mutableStateOf(true) }
-
     ExpandAndShrink(
+        modifier = modifier,
         visible = show && announcement.active &&
             announcement.text.isNotBlank() &&
             (!announcement.test || BuildConfig.DEBUG),
@@ -83,7 +91,7 @@ private fun AnnouncementItem(
         AnnouncementItemContent(
             text = announcement.text,
             url = announcement.url,
-            onClose = { show = false },
+            onClose = onClose,
         )
     }
 }
@@ -92,10 +100,11 @@ private fun AnnouncementItem(
 private fun AnnouncementItemContent(
     text: String,
     url: String?,
+    modifier: Modifier = Modifier,
     onClose: () -> Unit,
 ) {
     Surface(
-        modifier = Modifier
+        modifier = modifier
             .padding(16.dp, 0.dp, 16.dp, 0.dp),
         shape = MaterialTheme.shapes.large,
         color = MaterialTheme.colorScheme.surfaceVariant,
@@ -108,13 +117,14 @@ private fun AnnouncementItemContent(
 private fun AnnouncementPreferenceItemContent(
     text: String,
     url: String?,
+    modifier: Modifier = Modifier,
     onClose: (() -> Unit)?,
 ) {
     val context = LocalContext.current
     val hasLink = !url.isNullOrBlank()
 
     PreferenceTemplate(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .addIf(hasLink) {
                 clickable {

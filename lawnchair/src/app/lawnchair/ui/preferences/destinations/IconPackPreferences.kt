@@ -51,7 +51,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
@@ -66,7 +65,6 @@ import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.NestedScrollStretch
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
-import app.lawnchair.ui.preferences.preferenceGraph
 import app.lawnchair.util.Constants
 import app.lawnchair.util.getThemedIconPacksInstalled
 import app.lawnchair.util.isPackageInstalled
@@ -103,12 +101,10 @@ enum class ThemedIconsState(
     }
 }
 
-fun NavGraphBuilder.iconPackGraph(route: String) {
-    preferenceGraph(route, { IconPackPreferences() })
-}
-
 @Composable
-fun IconPackPreferences() {
+fun IconPackPreferences(
+    modifier: Modifier = Modifier,
+) {
     val prefs = preferenceManager()
     val iconPackAdapter = prefs.iconPackPackage.getAdapter()
     val themedIconPackAdapter = prefs.themedIconPackPackage.getAdapter()
@@ -120,6 +116,8 @@ fun IconPackPreferences() {
 
     PreferenceLayout(
         label = stringResource(id = R.string.icon_style),
+        modifier = modifier,
+        isExpandedScreen = true,
         scrollState = if (isPortrait) null else scrollState,
     ) {
         if (isPortrait) {
@@ -224,6 +222,7 @@ fun IconPackGrid(
     adapter: PreferenceAdapter<String>,
     drawerThemedIcons: Boolean,
     isThemedIconPack: Boolean,
+    modifier: Modifier = Modifier,
 ) {
     val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsState()
     val themedIconPacks by LocalPreferenceInteractor.current.themedIconPacks.collectAsState()
@@ -250,7 +249,7 @@ fun IconPackGrid(
         }
     }
 
-    BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+    BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
         val iconPackItemWidth = getIconPackItemWidth(
             availableWidth = this.maxWidth.value - padding.value,
             minimumWidth = 80f,

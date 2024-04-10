@@ -33,6 +33,7 @@ import app.lawnchair.ui.util.bottomSheetHandler
 @Composable
 fun ClickablePreference(
     label: String,
+    modifier: Modifier = Modifier,
     subtitle: String? = null,
     confirmationText: String? = null,
     onClick: () -> Unit,
@@ -40,7 +41,7 @@ fun ClickablePreference(
     val bottomSheetHandler = bottomSheetHandler
     PreferenceTemplate(
         title = { Text(text = label) },
-        modifier = Modifier
+        modifier = modifier
             .clickable {
                 if (confirmationText != null) {
                     bottomSheetHandler.show {
@@ -63,8 +64,9 @@ fun ClickablePreference(
 fun PreferenceClickConfirmation(
     title: String,
     text: String,
-    onDismissRequest: () -> Unit,
     onConfirm: () -> Unit,
+    onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     AlertBottomSheetContent(
         title = { Text(text = title) },
@@ -85,5 +87,6 @@ fun PreferenceClickConfirmation(
                 Text(text = stringResource(id = android.R.string.ok))
             }
         },
+        modifier = modifier,
     )
 }

@@ -2,6 +2,7 @@ package app.lawnchair.override
 
 import android.app.Activity
 import android.graphics.drawable.Drawable
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -52,10 +53,11 @@ fun CustomizeDialog(
     onTitleChange: (String) -> Unit,
     defaultTitle: String,
     launchSelectIcon: (() -> Unit)?,
+    modifier: Modifier = Modifier,
     content: (@Composable () -> Unit)? = null,
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .navigationBarsOrDisplayCutoutPadding()
             .fillMaxWidth(),
     ) {
@@ -108,6 +110,7 @@ fun CustomizeAppDialog(
     icon: Drawable,
     defaultTitle: String,
     componentKey: ComponentKey,
+    modifier: Modifier = Modifier,
     onClose: () -> Unit,
 ) {
     val prefs = preferenceManager()
@@ -123,8 +126,10 @@ fun CustomizeAppDialog(
         onClose()
     }
 
+    Log.d("TEST", "${Routes.SELECT_ICON}/$componentKey")
+
     val openIconPicker = {
-        val destination = "/${Routes.SELECT_ICON}/$componentKey/"
+        val destination = "${Routes.SELECT_ICON}/$componentKey/"
         request.launch(PreferenceActivity.createIntent(context, destination))
     }
 
@@ -146,6 +151,7 @@ fun CustomizeAppDialog(
         onTitleChange = { title = it },
         defaultTitle = defaultTitle,
         launchSelectIcon = openIconPicker,
+        modifier = modifier,
     ) {
         PreferenceGroup(
             description = componentKey.componentName.flattenToString(),

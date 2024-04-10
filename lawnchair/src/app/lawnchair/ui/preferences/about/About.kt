@@ -45,14 +45,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import androidx.navigation.NavGraphBuilder
-import app.lawnchair.ui.preferences.about.acknowledgements.licensesGraph
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.controls.ClickablePreference
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
-import app.lawnchair.ui.preferences.preferenceGraph
-import app.lawnchair.ui.preferences.subRoute
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.R
 
@@ -211,20 +207,17 @@ object AboutRoutes {
     const val LICENSES = "licenses"
 }
 
-fun NavGraphBuilder.aboutGraph(route: String) {
-    preferenceGraph(route, { About() }) { subRoute ->
-        licensesGraph(route = subRoute(AboutRoutes.LICENSES))
-    }
-}
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun About() {
+fun About(
+    modifier: Modifier = Modifier,
+) {
     val context = LocalContext.current
 
     PreferenceLayout(
-        horizontalAlignment = Alignment.CenterHorizontally,
         label = stringResource(id = R.string.about_label),
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Column(
             modifier = Modifier.padding(top = 8.dp),
@@ -293,7 +286,7 @@ fun About() {
         PreferenceGroup {
             NavigationActionPreference(
                 label = stringResource(id = R.string.acknowledgements),
-                destination = subRoute(name = AboutRoutes.LICENSES),
+                destination = AboutRoutes.LICENSES,
             )
             ClickablePreference(
                 label = stringResource(id = R.string.translate),

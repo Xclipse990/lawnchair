@@ -20,9 +20,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.asState
@@ -30,7 +30,6 @@ import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.theme.color.ColorOption
 import app.lawnchair.ui.preferences.LocalPreferenceInteractor
 import app.lawnchair.ui.preferences.components.FontPreference
-import app.lawnchair.ui.preferences.components.IconShapePreview
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.NotificationDotsPreference
 import app.lawnchair.ui.preferences.components.ThemePreference
@@ -39,28 +38,17 @@ import app.lawnchair.ui.preferences.components.colorpreference.ColorPreference
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.controls.SwitchPreference
 import app.lawnchair.ui.preferences.components.controls.WarningPreference
-import app.lawnchair.ui.preferences.components.iconShapeEntries
-import app.lawnchair.ui.preferences.components.iconShapeGraph
 import app.lawnchair.ui.preferences.components.layout.DividerColumn
 import app.lawnchair.ui.preferences.components.layout.ExpandAndShrink
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.components.notificationDotsEnabled
 import app.lawnchair.ui.preferences.components.notificationServiceEnabled
-import app.lawnchair.ui.preferences.preferenceGraph
-import app.lawnchair.ui.preferences.subRoute
 import com.android.launcher3.R
 
 object GeneralRoutes {
     const val ICON_PACK = "iconPack"
     const val ICON_SHAPE = "iconShape"
-}
-
-fun NavGraphBuilder.generalGraph(route: String) {
-    preferenceGraph(route, { GeneralPreferences() }) { subRoute ->
-        iconPackGraph(route = subRoute(GeneralRoutes.ICON_PACK))
-        iconShapeGraph(route = subRoute(GeneralRoutes.ICON_SHAPE))
-    }
 }
 
 @Composable
@@ -99,17 +87,33 @@ fun GeneralPreferences() {
             SwitchPreference(
                 adapter = prefs.allowRotation.getAdapter(),
                 label = stringResource(id = R.string.home_screen_rotation_label),
-                description = stringResource(id = R.string.home_screen_rotaton_description),
+                description = stringResource(id = R.string.home_screen_rotation_description),
             )
-            val enableFontSelection = prefs2.enableFontSelection.asState().value
-            if (enableFontSelection) {
+        }
+        ExpandAndShrink(visible = prefs2.enableFontSelection.asState().value) {
+            PreferenceGroup(heading = stringResource(id = R.string.font_label)) {
                 FontPreference(
                     fontPref = prefs.fontWorkspace,
-                    label = stringResource(id = R.string.font_label),
+                    label = stringResource(R.string.fontWorkspace),
+                )
+                FontPreference(
+                    fontPref = prefs.fontHeading,
+                    label = stringResource(R.string.fontHeading),
+                )
+                FontPreference(
+                    fontPref = prefs.fontHeadingMedium,
+                    label = stringResource(R.string.fontHeadingMedium),
+                )
+                FontPreference(
+                    fontPref = prefs.fontBody,
+                    label = stringResource(R.string.fontBody),
+                )
+                FontPreference(
+                    fontPref = prefs.fontBodyMedium,
+                    label = stringResource(R.string.fontBodyMedium),
                 )
             }
         }
-
         val wrapAdaptiveIcons = prefs.wrapAdaptiveIcons.getAdapter()
         val transparentIconBackground = prefs.transparentIconBackground.getAdapter()
         PreferenceGroup(
@@ -119,7 +123,7 @@ fun GeneralPreferences() {
         ) {
             NavigationActionPreference(
                 label = stringResource(id = R.string.icon_style),
-                destination = subRoute(name = GeneralRoutes.ICON_PACK),
+                destination = GeneralRoutes.ICON_PACK,
                 subtitle = iconStyleSubtitle,
             )
             ExpandAndShrink(visible = themedIconsEnabled) {
@@ -131,7 +135,7 @@ fun GeneralPreferences() {
             }
             NavigationActionPreference(
                 label = stringResource(id = R.string.icon_shape_label),
-                destination = subRoute(name = GeneralRoutes.ICON_SHAPE),
+                destination = GeneralRoutes.ICON_SHAPE,
                 subtitle = iconShapeSubtitle,
                 endWidget = {
                     IconShapePreview(iconShape = iconShapeAdapter.state.value)
@@ -188,6 +192,7 @@ fun GeneralPreferences() {
 private fun NotificationDotColorContrastWarnings(
     dotColor: ColorOption,
     dotTextColor: ColorOption,
+    modifier: Modifier = Modifier,
 ) {
     val dotColorIsDynamic = when (dotColor) {
         is ColorOption.SystemAccent,
@@ -198,12 +203,16 @@ private fun NotificationDotColorContrastWarnings(
     }
 
     if (dotColorIsDynamic && dotTextColor !is ColorOption.Default) {
-        WarningPreference(text = stringResource(id = R.string.notification_dots_color_contrast_warning_sometimes))
+        WarningPreference(
+            text = stringResource(id = R.string.notification_dots_color_contrast_warning_sometimes),
+            modifier = modifier,
+        )
     } else {
         ColorContrastWarning(
             foregroundColor = dotTextColor,
             backgroundColor = dotColor,
             text = stringResource(id = R.string.notification_dots_color_contrast_warning_always),
+            modifier = modifier,
         )
     }
 }

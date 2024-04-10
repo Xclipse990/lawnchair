@@ -5,8 +5,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
@@ -19,7 +19,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.asPreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
@@ -28,20 +27,19 @@ import app.lawnchair.ui.preferences.components.GridOverridesPreview
 import app.lawnchair.ui.preferences.components.controls.SliderPreference
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
-import app.lawnchair.ui.preferences.preferenceGraph
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 
-fun NavGraphBuilder.homeScreenGridGraph(route: String) {
-    preferenceGraph(route, { HomeScreenGridPreferences() })
-}
-
 @Composable
-fun HomeScreenGridPreferences() {
+fun HomeScreenGridPreferences(
+    modifier: Modifier = Modifier,
+) {
     val isPortrait = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
     val scrollState = rememberScrollState()
     PreferenceLayout(
         label = stringResource(id = R.string.home_screen_grid),
+        modifier = modifier,
+        isExpandedScreen = true,
         scrollState = if (isPortrait) null else scrollState,
     ) {
         val prefs = preferenceManager()

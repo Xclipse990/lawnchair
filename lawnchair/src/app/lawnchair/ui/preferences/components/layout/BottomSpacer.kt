@@ -14,9 +14,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 
 @Composable
-fun BottomSpacer() {
+fun BottomSpacer(
+    modifier: Modifier = Modifier,
+) {
     Box(
         contentAlignment = Alignment.BottomStart,
+        modifier = modifier,
     ) {
         Spacer(modifier = Modifier.navigationBarsPadding().imePadding())
         Spacer(

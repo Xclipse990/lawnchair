@@ -26,6 +26,7 @@ import android.content.Intent
 import android.os.Build
 import android.provider.Settings
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedButton
@@ -37,7 +38,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.lawnchairApp
-import app.lawnchair.ui.AlertBottomSheetContent
+import app.lawnchair.ui.ModalBottomSheetContent
 import app.lawnchair.util.requireSystemService
 import app.lawnchair.views.ComposeBottomSheet
 import com.android.launcher3.R
@@ -133,10 +134,12 @@ fun ServiceWarningDialog(
     title: Int,
     description: Int,
     settingsIntent: Intent,
+    modifier: Modifier = Modifier,
     handleClose: () -> Unit,
 ) {
     val context = LocalContext.current
-    AlertBottomSheetContent(
+    ModalBottomSheetContent(
+        modifier = modifier.padding(top = 16.dp),
         title = { Text(text = stringResource(id = title)) },
         text = { Text(text = stringResource(id = description)) },
         buttons = {

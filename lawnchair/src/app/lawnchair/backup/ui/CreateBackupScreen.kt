@@ -38,7 +38,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavGraphBuilder
 import app.lawnchair.backup.LawnchairBackup
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.ui.preferences.LocalNavController
@@ -47,7 +46,6 @@ import app.lawnchair.ui.preferences.components.WallpaperPreview
 import app.lawnchair.ui.preferences.components.controls.FlagSwitchPreference
 import app.lawnchair.ui.preferences.components.layout.PreferenceGroup
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
-import app.lawnchair.ui.preferences.preferenceGraph
 import app.lawnchair.util.BackHandler
 import app.lawnchair.util.checkAndRequestFilesPermission
 import app.lawnchair.util.filesAndStorageGranted
@@ -58,15 +56,11 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import kotlinx.coroutines.launch
-
-fun NavGraphBuilder.createBackupGraph(route: String) {
-    preferenceGraph(route, { CreateBackupScreen(viewModel()) })
-}
-
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun CreateBackupScreen(
     viewModel: CreateBackupViewModel,
+    modifier: Modifier = Modifier,
 ) {
     val contents by viewModel.backupContents.collectAsState()
     val screenshot by viewModel.screenshot.collectAsState()
@@ -122,6 +116,7 @@ fun CreateBackupScreen(
 
     PreferenceLayout(
         label = stringResource(id = R.string.create_backup),
+        modifier = modifier,
         scrollState = if (isPortrait) null else scrollState,
     ) {
         DisposableEffect(contents, hasLiveWallpaper, hasStoragePermission) {
