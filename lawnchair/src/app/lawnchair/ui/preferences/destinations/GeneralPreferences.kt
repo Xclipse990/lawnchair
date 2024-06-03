@@ -17,17 +17,18 @@
 package app.lawnchair.ui.preferences.destinations
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.asState
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.theme.color.ColorOption
+import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.LocalPreferenceInteractor
 import app.lawnchair.ui.preferences.components.FontPreference
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
@@ -56,7 +57,7 @@ fun GeneralPreferences() {
     val context = LocalContext.current
     val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
-    val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsState()
+    val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsStateWithLifecycle()
     val themedIconsAdapter = prefs.themedIcons.getAdapter()
     val drawerThemedIconsAdapter = prefs.drawerThemedIcons.getAdapter()
     val iconShapeAdapter = prefs2.iconShape.getAdapter()
@@ -82,7 +83,10 @@ fun GeneralPreferences() {
         ?.label?.invoke()
         ?: stringResource(id = R.string.custom)
 
-    PreferenceLayout(label = stringResource(id = R.string.general_label)) {
+    PreferenceLayout(
+        backArrowVisible = !LocalIsExpandedScreen.current,
+        label = stringResource(id = R.string.general_label),
+    ) {
         PreferenceGroup {
             SwitchPreference(
                 adapter = prefs.allowRotation.getAdapter(),
@@ -164,7 +168,7 @@ fun GeneralPreferences() {
         }
 
         PreferenceGroup(heading = stringResource(id = R.string.notification_dots)) {
-            val enabled by remember { notificationDotsEnabled(context) }.collectAsState(initial = false)
+            val enabled by remember { notificationDotsEnabled(context) }.collectAsStateWithLifecycle(initialValue = false)
             val serviceEnabled = notificationServiceEnabled()
             NotificationDotsPreference(enabled = enabled, serviceEnabled = serviceEnabled)
             if (enabled && serviceEnabled) {

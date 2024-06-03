@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -13,6 +12,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.not
@@ -20,6 +20,7 @@ import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.search.algorithms.LawnchairSearchAlgorithm
+import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.HiddenAppsInSearchPreference
 import app.lawnchair.ui.preferences.components.SearchSuggestionPreference
 import app.lawnchair.ui.preferences.components.controls.ListPreference
@@ -46,7 +47,10 @@ fun SearchPreferences() {
     val showDrawerSearchBar = !prefs2.hideAppDrawerSearchBar.getAdapter()
     val hiddenApps = prefs2.hiddenApps.getAdapter().state.value
 
-    PreferenceLayout(label = stringResource(id = R.string.drawer_search_label)) {
+    PreferenceLayout(
+        label = stringResource(id = R.string.drawer_search_label),
+        backArrowVisible = !LocalIsExpandedScreen.current,
+    ) {
         MainSwitchPreference(
             adapter = showDrawerSearchBar,
             label = stringResource(id = R.string.show_app_search_bar),
@@ -180,7 +184,7 @@ private fun LocalSearchSettings(
     )
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         val lifecycleOwner = LocalLifecycleOwner.current
-        val state by lifecycleOwner.lifecycle.currentStateFlow.collectAsState()
+        val state by lifecycleOwner.lifecycle.currentStateFlow.collectAsStateWithLifecycle()
         var isGranted by remember { mutableStateOf(filesAndStorageGranted(context)) }
         // TODO refactor permission handling of all files access
 

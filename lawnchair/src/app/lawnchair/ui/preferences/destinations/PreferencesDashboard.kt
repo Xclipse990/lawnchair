@@ -35,7 +35,6 @@ import app.lawnchair.preferences.observeAsState
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.OverflowMenu
 import app.lawnchair.ui.preferences.LocalNavController
-import app.lawnchair.ui.preferences.Routes
 import app.lawnchair.ui.preferences.components.AnnouncementPreference
 import app.lawnchair.ui.preferences.components.controls.WarningPreference
 import app.lawnchair.ui.preferences.components.layout.ClickableIcon
@@ -44,6 +43,7 @@ import app.lawnchair.ui.preferences.components.layout.PreferenceDivider
 import app.lawnchair.ui.preferences.components.layout.PreferenceLayout
 import app.lawnchair.ui.preferences.components.layout.PreferenceTemplate
 import app.lawnchair.ui.preferences.data.liveinfo.SyncLiveInformation
+import app.lawnchair.ui.preferences.navigation.Routes
 import app.lawnchair.util.isDefaultLauncher
 import app.lawnchair.util.restartLauncher
 import com.android.launcher3.BuildConfig
@@ -67,11 +67,14 @@ fun PreferencesDashboard(
     ) {
         AnnouncementPreference()
 
-        if (BuildConfig.DEBUG) PreferencesDebugWarning()
+        if (BuildConfig.DEBUG) {
+            PreferencesDebugWarning()
+            Spacer(modifier = Modifier.height(16.dp))
+        }
 
         if (!context.isDefaultLauncher()) {
-            Spacer(modifier = Modifier.height(16.dp))
             PreferencesSetDefaultLauncherWarning()
+            Spacer(modifier = Modifier.height(16.dp))
         }
 
         PreferenceCategory(
