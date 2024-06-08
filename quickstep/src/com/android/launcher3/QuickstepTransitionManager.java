@@ -1150,14 +1150,11 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
      * Registers remote animations used when closing apps to home screen.
      */
     public void registerRemoteTransitions() {
-        if (ENABLE_SHELL_TRANSITIONS && LawnchairQuickstepCompat.ATLEAST_U) {
+        if (SEPARATE_RECENTS_ACTIVITY.get() || !Utilities.ATLEAST_T) return;
+
+        if (ENABLE_SHELL_TRANSITIONS && LawnchairQuickstepCompat.ATLEAST_U)
             SystemUiProxy.INSTANCE.get(mLauncher).shareTransactionQueue();
-        }
-        if (SEPARATE_RECENTS_ACTIVITY.get()) {
-            return;
-        }
-        if (!LawnchairQuickstepCompat.ATLEAST_T) return;
-        if (hasControlRemoteAppTransitionPermission()) {
+        if (hasControlRemoteAppTransitionPermission() && LawnchairQuickstepCompat.ATLEAST_Q) {
             mWallpaperOpenTransitionRunner = createWallpaperOpenRunner(false /* fromUnlock */);
             mLauncherOpenTransition = LawnchairQuickstepCompat.getRemoteTransitionCompat().getRemoteTransition(
                     new LauncherAnimationRunner(mHandler, mWallpaperOpenTransitionRunner,
