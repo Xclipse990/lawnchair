@@ -544,17 +544,12 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             // Will be called at the end of the animation.
             return;
         }
-        if (currentActivePage != SEARCH) {
-            mActivityContext.hideKeyboard();
-        }
         if (mAH.get(currentActivePage).mRecyclerView != null) {
             mAH.get(currentActivePage).mRecyclerView.bindFastScrollbar(mFastScroller);
         }
         // Header keeps track of active recycler view to properly render header
         // protection.
         mHeader.setActiveRV(currentActivePage);
-        reset(true /* animate */, !isSearching() /* exitSearch */);
-
         mWorkManager.onActivePageChanged(currentActivePage);
     }
 
@@ -846,7 +841,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
      */
     public int getFloatingSearchBarRestingMarginStart() {
         DeviceProfile dp = mActivityContext.getDeviceProfile();
-        return dp.allAppsLeftRightMargin + dp.getAllAppsIconStartMargin();
+        return dp.allAppsLeftRightMargin + dp.getAllAppsIconStartMargin(mActivityContext);
     }
 
     /**
@@ -862,7 +857,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
      */
     public int getFloatingSearchBarRestingMarginEnd() {
         DeviceProfile dp = mActivityContext.getDeviceProfile();
-        return dp.allAppsLeftRightMargin + dp.getAllAppsIconStartMargin();
+        return dp.allAppsLeftRightMargin + dp.getAllAppsIconStartMargin(mActivityContext);
     }
 
     private void layoutBelowSearchContainer(View v, boolean includeTabsMargin) {
@@ -1165,7 +1160,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         if (grid.isVerticalBarLayout()) {
             setPadding(grid.workspacePadding.left, 0, grid.workspacePadding.right, 0);
         } else {
-            int topPadding = grid.allAppsTopPadding;
+            int topPadding = grid.allAppsPadding.top;
             if (isSearchBarFloating() && !grid.isTablet) {
                 topPadding += getResources().getDimensionPixelSize(
                         R.dimen.all_apps_additional_top_padding_floating_search);
@@ -1227,7 +1222,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         int bottomPadding = Math.max(mInsets.bottom, mNavBarScrimHeight);
         mAH.forEach(adapterHolder -> {
             adapterHolder.mPadding.bottom = bottomPadding;
-            adapterHolder.mPadding.left = adapterHolder.mPadding.right = grid.allAppsLeftRightPadding;
+            adapterHolder.mPadding.left = adapterHolder.mPadding.right = grid.allAppsPadding.left + grid.allAppsPadding.right;
             adapterHolder.applyPadding();
         });
     }
