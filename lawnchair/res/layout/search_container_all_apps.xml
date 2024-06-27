@@ -76,7 +76,7 @@
         android:clickable="true"
         android:contentDescription="@string/search_bar_label"
         android:scaleType="center"
-        android:src="@drawable/ic_allapps_search"
+        android:src="@drawable/ic_allapps_search_container"
         app:tint="?android:textColorSecondary" />
 
     <ImageButton
