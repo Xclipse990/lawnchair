@@ -66,7 +66,7 @@ allprojects {
 
     plugins.withType(JavaBasePlugin).configureEach {
         java {
-            toolchain.languageVersion = JavaLanguageVersion.of(21)
+            toolchain.languageVersion = JavaLanguageVersion.of(17)
         }
     }
 
@@ -123,10 +123,10 @@ final def ciBuild = System.getenv("CI") == "true"
 final def ciRef = System.getenv("GITHUB_REF") ?: ""
 final def ciRunNumber = System.getenv("GITHUB_RUN_NUMBER") ?: ""
 final def isReleaseBuild = ciBuild && ciRef.contains("beta")
-final def devReleaseName = ciBuild ? "Dev (#${ciRunNumber})" : "Dev (${buildCommit})"
+final def devReleaseName = ciBuild ? "Dev.(#${ciRunNumber})" : "Dev.(${buildCommit})"
 final def version = "14"
 final def releaseName = "Beta 2"
-final def versionDisplayName = "${version} ${isReleaseBuild ? releaseName : devReleaseName}"
+final def versionDisplayName = "${version}.${isReleaseBuild ? releaseName : devReleaseName}"
 final def majorVersion = versionDisplayName.split("\\.")[0]
 
 final def quickstepMinSdk = "29"
@@ -148,25 +148,15 @@ android {
         buildConfigField "int", "QUICKSTEP_MIN_SDK", quickstepMinSdk
         buildConfigField "int", "QUICKSTEP_MAX_SDK", quickstepMaxSdk
     }
-    androidComponents {
-        onVariants(selector().all()) { variant ->
-            def capName = variant.name.capitalize()
-            def licenseeTask = tasks.named("licenseeAndroid$capName", LicenseeTask)
-            def copyArtifactsTask = tasks.register("copy${capName}Artifacts", Copy) {
-                dependsOn(licenseeTask)
-                from(licenseeTask.map { it.outputDir.file("artifacts.json") })
-                into(layout.buildDirectory.dir("generated/dependencyAssets"))
-            }
-            variant.sources.assets?.addGeneratedSourceDirectory(licenseeTask) {
-                objects.directoryProperty().fileProvider(copyArtifactsTask.map { it.destinationDir })
-            }
-        }
-    }
 
     applicationVariants.configureEach { variant ->
         variant.outputs.configureEach {
             outputFileName = "Lawnchair ${variant.versionName}.apk"
         }
+    }
+
+    androidResources {
+        generateLocaleConfig true
     }
 
     buildFeatures {
@@ -218,12 +208,10 @@ android {
         debug {
             applicationIdSuffix ".debug"
             resValue("string", "derived_app_name", "Lawnchair (Debug)")
-            signingConfig releaseSigning
         }
 
         release {
             resValue("string", "derived_app_name", "Lawnchair")
-            signingConfig releaseSigning
             minifyEnabled true
             shrinkResources true
             proguardFiles proguardFilesFromAosp + "proguard.pro"
@@ -358,6 +346,23 @@ android {
     }
 }
 
+androidComponents {
+    onVariants(selector().all()) { variant ->
+        def capName = variant.name.capitalize()
+        def licenseeTask = tasks.named("licenseeAndroid$capName", LicenseeTask)
+        def copyArtifactsTask = tasks.register("copy${capName}Artifacts", Copy) {
+            dependsOn(licenseeTask)
+            from(licenseeTask.map { it.jsonOutput })
+            // Copy artifacts.json to a new directory.
+            into(layout.buildDirectory.dir("generated/dependencyAssets/${variant.name}"))
+        }
+        variant.sources.assets?.addGeneratedSourceDirectory(licenseeTask) {
+            // Avoid using LicenseeTask::outputDir as it contains extra files that we don't need.
+            objects.directoryProperty().fileProvider(copyArtifactsTask.map { it.destinationDir })
+        }
+    }
+}
+
 addFrameworkJar('framework-14.jar')
 
 dependencies {
@@ -388,9 +393,6 @@ dependencies {
 
     implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell-14.jar')
     withQuickstepCompileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'framework-14.jar')
-
-    // Required for AOSP to compile. This is already included in the sysui_shared.jar
-    withoutQuickstepImplementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'plugin_core.jar')
 
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
 
