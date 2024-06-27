@@ -40,6 +40,7 @@ object ColorTokens {
 
     val Accent2_50 = SwatchColorToken(Swatch.Accent2, Shade.S50)
     val Accent2_100 = SwatchColorToken(Swatch.Accent2, Shade.S100)
+    val Accent2_200 = SwatchColorToken(Swatch.Accent2, Shade.S200)
     val Accent2_300 = SwatchColorToken(Swatch.Accent2, Shade.S300)
     val Accent2_500 = SwatchColorToken(Swatch.Accent2, Shade.S500)
     val Accent2_600 = SwatchColorToken(Swatch.Accent2, Shade.S600)
@@ -65,7 +66,7 @@ object ColorTokens {
 
     @JvmField val ColorBackground = DayNightColorToken(Neutral1_50, Neutral1_900)
 
-    @JvmField val ColorBackgroundFloating = DayNightColorToken(Neutral2_50, Neutral2_900)
+    @JvmField val ColorBackgroundFloating = DayNightColorToken(Neutral1_50, Neutral1_900)
 
     @JvmField val ColorPrimary = DayNightColorToken(Neutral1_50, Neutral1_900)
 
@@ -96,19 +97,19 @@ object ColorTokens {
             if (translucent) setAlpha(translucentIntensity) else this
         }
 
-    @JvmField val SearchboxHighlight = DayNightColorToken(SurfaceVariantLight, Neutral1_800)
+    @JvmField val SearchboxHighlight = DayNightColorToken(Neutral1_10, Neutral1_800)
 
     @JvmField val FolderDotColor = Accent3_100
 
     @JvmField val DotColor = Accent3_200
 
-    @JvmField val FolderBackgroundColor = DayNightColorToken(Neutral1_50.setLStar(98.0), Neutral2_50.setLStar(30.0))
+    @JvmField val FolderBackgroundColor = DayNightColorToken(Neutral1_50,Neutral2_900)
 
     @JvmField val FolderIconBorderColor = ColorPrimary
 
     @JvmField val FolderPaginationColor = DayNightColorToken(Accent1_600, Accent2_100)
 
-    @JvmField val FolderPreviewColor = DayNightColorToken(Accent2_50.setLStar(80.0), Accent2_50.setLStar(30.0))
+    @JvmField val FolderPreviewColor = DayNightColorToken(Accent2_200, Neutral1_800)
 
     @JvmField val PopupColorPrimary = DayNightColorToken(Accent2_50, Neutral2_800)
 
@@ -128,7 +129,7 @@ object ColorTokens {
 
     @JvmField val QsbIconTintTertiary = DayNightColorToken(Accent2_300, Accent1_10)
 
-    @JvmField val QsbIconTintQuaternary = DayNightColorToken(Accent1_600, Accent1_100)
+    @JvmField val QsbIconTintQuaternary = DayNightColorToken(Accent1_600, Accent1_200)
 
     @JvmField val WallpaperPopupScrim = Neutral1_900
 
