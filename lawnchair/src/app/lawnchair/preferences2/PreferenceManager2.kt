@@ -40,6 +40,7 @@ import app.lawnchair.smartspace.model.SmartspaceMode
 import app.lawnchair.smartspace.model.SmartspaceTimeFormat
 import app.lawnchair.theme.color.ColorMode
 import app.lawnchair.theme.color.ColorOption
+import app.lawnchair.theme.color.ColorStyle
 import app.lawnchair.ui.preferences.components.HiddenAppsInSearch
 import app.lawnchair.util.kotlinxJson
 import com.android.launcher3.InvariantDeviceProfile
@@ -108,6 +109,14 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
     val alwaysReloadIcons = preference(
         key = booleanPreferencesKey(name = "always_reload_icons"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_always_reload_icons),
+    )
+
+    val colorStyle = preference(
+        key = stringPreferencesKey("color_style"),
+        defaultValue = ColorStyle.fromString("tonal_spot"),
+        parse = { ColorStyle.fromString(it) },
+        save = { it.toString() },
+        onSet = { reloadHelper.restart() },
     )
 
     val notificationDotColor = preference(
