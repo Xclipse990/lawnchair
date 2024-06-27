@@ -559,6 +559,7 @@ public final class TaskViewUtils {
      * 
      * @deprecated with shell transitions
      */
+    @Deprecated
     public static void composeRecentsSplitLaunchAnimatorLegacy(
             @Nullable GroupedTaskView launchingTaskView, int initialTaskId, int secondTaskId,
             @NonNull RemoteAnimationTarget[] appTargets,
