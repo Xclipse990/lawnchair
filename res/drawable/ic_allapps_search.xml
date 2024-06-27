@@ -17,10 +17,17 @@
     android:width="24dp"
     android:height="24dp"
     android:viewportHeight="24.0"
-    android:viewportWidth="24.0"
-    android:autoMirrored="true"
-    android:tint="?android:attr/textColorPrimary">
-    <path
-        android:fillColor="@android:color/white"
-        android:pathData="M15.5,14h-0.79l-0.28,-0.27C15.41,12.59 16,11.11 16,9.5 16,5.91 13.09,3 9.5,3S3,5.91 3,9.5 5.91,16 9.5,16c1.61,0 3.09,-0.59 4.23,-1.57l0.27,0.28v0.79l5,4.99L20.49,19l-4.99,-5zM9.5,14C7.01,14 5,11.99 5,9.5S7.01,5 9.5,5 14,7.01 14,9.5 11.99,14 9.5,14z" />
+    android:viewportWidth="24.0">
+  <path
+      android:fillColor="#4285F4"
+      android:pathData="M23.49,12.27C23.49,11.48 23.42,10.73 23.3,10H12V14.51H18.47C18.18,15.99 17.33,17.24 16.07,18.09V21.09H19.93C22.19,19 23.49,15.92 23.49,12.27Z" />
+  <path
+      android:fillColor="#34A853"
+      android:pathData="M12,24C15.24,24 17.95,22.92 19.93,21.09L16.07,18.09C14.99,18.81 13.62,19.25 12,19.25C8.87,19.25 6.22,17.14 5.27,14.29H1.29V17.38C3.26,21.3 7.31,24 12,24Z" />
+  <path
+      android:fillColor="#FBBC05"
+      android:pathData="M5.27,14.29C5.02,13.57 4.89,12.8 4.89,12C4.89,11.2 5.03,10.43 5.27,9.71V6.62H1.29C0.47,8.24 0,10.06 0,12C0,13.94 0.47,15.76 1.29,17.38L5.27,14.29Z" />
+  <path
+      android:fillColor="#EA4335"
+      android:pathData="M12,4.75C13.77,4.75 15.35,5.36 16.6,6.55L20.02,3.13C17.95,1.19 15.24,0 12,0C7.31,0 3.26,2.7 1.29,6.62L5.27,9.71C6.22,6.86 8.87,4.75 12,4.75Z" />
 </vector>
