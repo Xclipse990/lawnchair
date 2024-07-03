@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.animation.Interpolator
 import android.widget.LinearLayout
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
@@ -16,11 +18,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material3.LocalContentColor as M3LocalContentColor
-import androidx.compose.material3.MaterialTheme as Material3Theme
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -155,7 +156,8 @@ class ComposeBottomSheet<T>(context: Context) :
 
     @Composable
     private fun SystemUi(setStatusBar: Boolean = true, setNavBar: Boolean = true) {
-        val useDarkIcons = MaterialTheme.colors.isLight
+        // todo change to isLight
+        val useDarkIcons = true
 
         SideEffect {
             var flags = 0
@@ -188,8 +190,8 @@ class ComposeBottomSheet<T>(context: Context) :
         LawnchairTheme {
             ProvideLifecycleState {
                 CompositionLocalProvider(
-                    LocalContentColor provides MaterialTheme.colors.onSurface,
-                    M3LocalContentColor provides Material3Theme.colorScheme.onSurface,
+                    LocalContentColor provides MaterialTheme.colorScheme.onSurface,
+                    LocalContentColor provides MaterialTheme.colorScheme.onSurface,
                 ) {
                     content()
                 }
@@ -210,21 +212,28 @@ class ComposeBottomSheet<T>(context: Context) :
         setImeShift(with(LocalDensity.current) { -translation.calculateBottomPadding().toPx() })
 
         SystemUi(setStatusBar = false)
-        Surface(
-            modifier = Modifier
-                .fillMaxWidth(),
-            shape = backgroundShape,
-            color = Material3Theme.colorScheme.background,
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth(),
         ) {
-            Box(
+            Surface(
                 modifier = Modifier
-                    .padding(contentPaddings)
-                    .graphicsLayer(
-                        alpha = 1f - (hintCloseProgress * 0.5f),
-                        translationY = hintCloseProgress * -hintCloseDistance,
-                    ),
+                    .widthIn(max = 640.dp)
+                    .fillMaxWidth(),
+                shape = backgroundShape,
+                color = MaterialTheme.colorScheme.background,
+
             ) {
-                content(this@ComposeBottomSheet)
+                Box(
+                    modifier = Modifier
+                        .padding(contentPaddings)
+                        .graphicsLayer(
+                            alpha = 1f - (hintCloseProgress * 0.5f),
+                            translationY = hintCloseProgress * -hintCloseDistance,
+                        ),
+                ) {
+                    content(this@ComposeBottomSheet)
+                }
             }
         }
     }

@@ -27,7 +27,7 @@ import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.search.LawnchairRecentSuggestionProvider
 import app.lawnchair.search.algorithms.LawnchairSearchAlgorithm
-import app.lawnchair.theme.color.tokens.ColorTokens
+import app.lawnchair.search.algorithms.data.WebSearchProvider
 import app.lawnchair.theme.drawable.DrawableTokens
 import com.android.launcher3.Insettable
 import com.android.launcher3.LauncherState
@@ -39,6 +39,7 @@ import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem
 import com.android.launcher3.allapps.SearchUiManager
 import com.android.launcher3.allapps.search.AllAppsSearchBarController
 import com.android.launcher3.search.SearchCallback
+import com.android.launcher3.util.Themes
 import com.patrykmichalik.opto.core.firstBlocking
 import java.util.Locale
 import kotlin.math.max
@@ -111,6 +112,10 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
         searchIcon = ViewCompat.requireViewById(this, R.id.search_icon)
         with(searchIcon) {
             isVisible = true
+
+            if (prefs2.useDrawerSearchIcon.firstBlocking()) {
+                setImageResource(WebSearchProvider.fromString(prefs2.webSuggestionProvider.firstBlocking().toString()).iconRes)
+            }
             // todo implement search feature
         }
 
@@ -162,7 +167,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
             focusedLowerCase.matches(Regex("^[\\x00-\\x7F]*$")) &&
             focusedLowerCase.startsWith(inputLowerCase)
         ) {
-            val hintColor = ColorTokens.TextColorTertiary.resolveColor(context)
+            val hintColor = Themes.getAttrColor(context, android.R.attr.textColorTertiary)
             val hintText = SpannableStringBuilder(inputString)
                 .append(focusedLowerCase.substring(inputLowerCase.length))
             hintText.setSpan(ForegroundColorSpan(Color.TRANSPARENT), 0, inputLowerCase.length, SPAN_POINT_MARK)

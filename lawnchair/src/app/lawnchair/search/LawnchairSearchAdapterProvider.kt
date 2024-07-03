@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.core.util.contains
 import app.lawnchair.allapps.views.SearchItemDecorator
 import app.lawnchair.allapps.views.SearchResultView
-import app.lawnchair.allapps.views.SearchResultView.Companion.EXTRA_QUICK_LAUNCH
 import app.lawnchair.search.adapter.SearchAdapterItem
 import app.lawnchair.search.adapter.SearchResultActionCallBack
 import com.android.app.search.LayoutType
@@ -124,14 +123,5 @@ class LawnchairSearchAdapterProvider(
             LayoutType.WIDGET_LIVE to SEARCH_RESULT_RECENT_TILE,
             LayoutType.CALCULATOR to SEARCH_RESULT_CALCULATOR,
         )
-
-        fun setFirstItemQuickLaunch(items: List<SearchAdapterItem>) {
-            val hasQuickLaunch = items.any { it.searchTarget.extras.getBoolean(EXTRA_QUICK_LAUNCH, false) }
-            if (!hasQuickLaunch) {
-                items.firstOrNull()?.searchTarget?.extras?.apply {
-                    putBoolean(EXTRA_QUICK_LAUNCH, true)
-                }
-            }
-        }
     }
 }
