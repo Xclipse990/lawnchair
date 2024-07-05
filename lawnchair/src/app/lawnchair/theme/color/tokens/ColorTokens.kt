@@ -76,7 +76,7 @@ object ColorTokens {
 
     @JvmField val TextColorSecondary = DayNightColorToken(StaticColorToken(0xde000000), Neutral2_200)
 
-    @JvmField val AllAppsHeaderProtectionColor = DayNightColorToken(Neutral1_100, Neutral2_600.setLStar(15.0))
+    @JvmField val AllAppsHeaderProtectionColor = DayNightColorToken(Neutral1_100, Neutral1_700)
 
     @JvmField val AllAppsScrimColor = ColorBackground
 
