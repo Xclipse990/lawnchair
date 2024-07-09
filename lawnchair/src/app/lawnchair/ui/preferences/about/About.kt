@@ -212,7 +212,7 @@ fun About(
     PreferenceLayout(
         label = stringResource(id = R.string.about_label),
         modifier = modifier,
-        backArrowVisible = LocalIsExpandedScreen.current,
+        backArrowVisible = !LocalIsExpandedScreen.current,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Column(
