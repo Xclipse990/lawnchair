@@ -2,28 +2,24 @@ name: Build release APK
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - 14-testing
 
 jobs:
   build-release-apk:
-    runs-on: macos-14
+    runs-on: ubuntu-latest
     continue-on-error: true
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           submodules: true
       - uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: 21
-      - uses: gradle/actions/setup-gradle@v3
+      - uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-home-cache-cleanup: true
+          cache-encryption-key: Da25KUVSE5jbGds2zXmfXw==
       - name: Write sign info
-        if: github.repository == 'LawnchairLauncher/lawnchair'
+        if: github.repository_owner == 'LawnchairLauncher'
         run: |
           if [ ! -z "${{ secrets.KEYSTORE }}" ]; then
             echo storePassword='${{ secrets.KEYSTORE_PASSWORD }}' >> keystore.properties
@@ -33,9 +29,10 @@ jobs:
             echo ${{ secrets.KEYSTORE }} | base64 --decode > ${{ github.workspace }}/key.jks
           fi
       - name: Build release APK
-        run: ./gradlew assembleLawnWithQuickstepRelease
+        run: ./gradlew assembleLawnWithQuickstepGithubRelease bundleLawnWithQuickstepMarketRelease
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: Release APK
-          path: build/outputs/apk/lawnWithQuickstep/release/*.apk
+          path: build/outputs/*
+          
