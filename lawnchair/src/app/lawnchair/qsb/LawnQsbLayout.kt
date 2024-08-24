@@ -6,6 +6,8 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.PaintDrawable
 import android.util.AttributeSet
 import android.widget.FrameLayout
@@ -27,6 +29,7 @@ import app.lawnchair.qsb.providers.Google
 import app.lawnchair.qsb.providers.GoogleGo
 import app.lawnchair.qsb.providers.PixelSearch
 import app.lawnchair.qsb.providers.QsbSearchProvider
+import app.lawnchair.theme.color.ColorOption
 import app.lawnchair.util.pendingIntent
 import app.lawnchair.util.repeatOnAttached
 import app.lawnchair.util.viewAttachedScope
@@ -37,6 +40,9 @@ import com.android.launcher3.qsb.QsbContainerView
 import com.android.launcher3.util.Themes
 import com.android.launcher3.views.ActivityContext
 import com.patrykmichalik.opto.core.firstBlocking
+import com.patrykmichalik.opto.core.onEach
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flatMapLatest
@@ -53,6 +59,9 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
     private lateinit var preferenceManager: PreferenceManager
     private lateinit var preferenceManager2: PreferenceManager2
     private var searchPendingIntent: PendingIntent? = null
+    private val coroutineScope = CoroutineScope(Dispatchers.Default)
+
+    private var strokeColor: ColorOption? = null
 
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun onFinishInflate() {
@@ -64,6 +73,11 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
         inner = ViewCompat.requireViewById(this, R.id.inner)
         preferenceManager = PreferenceManager.getInstance(context)
         preferenceManager2 = PreferenceManager2.getInstance(context)
+
+        preferenceManager2.strokeColorStyle.onEach(launchIn = coroutineScope) {
+            strokeColor = it
+            setUpBackground()
+        }
 
         setUpBackground()
         clipIconRipples()
@@ -114,6 +128,9 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
             }
             subscribeGoogleSearchWidget()
         }
+
+        preferenceManager.hotseatQsbAlpha.subscribeChanges(this::setUpBackground)
+        preferenceManager.hotseatQsbStrokeWidth.subscribeChanges(this::setUpBackground)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -179,13 +196,32 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
     }
 
     private fun setUpBackground(themed: Boolean = false) {
+        val transparency = preferenceManager.hotseatQsbAlpha.get()
         val cornerRadius = getCornerRadius(context, preferenceManager)
-        val color = if (themed) Themes.getColorBackgroundFloating(context) else Themes.getAttrColor(context, R.attr.qsbFillColor)
+        val baseColor = if (themed) Themes.getColorBackgroundFloating(context) else Themes.getAttrColor(context, R.attr.qsbFillColor)
+        val alphaValue = (transparency * 255) / 100
+        val color = Color.argb(alphaValue, Color.red(baseColor), Color.green(baseColor), Color.blue(baseColor))
+        val strokeColor = strokeColor
+        val strokeWidth = preferenceManager.hotseatQsbStrokeWidth.get()
+
+        val backgroundDrawable = PaintDrawable(color).apply {
+            setCornerRadius(cornerRadius)
+        }
+
+        val strokeDrawable = PaintDrawable().apply {
+            paint.style = Paint.Style.STROKE
+            paint.color = strokeColor?.colorPreferenceEntry?.lightColor?.invoke(context) ?: Themes.getColorAccent(context)
+            paint.strokeWidth = strokeWidth
+            setCornerRadius(cornerRadius)
+        }
+
+        val combinedDrawable = LayerDrawable(arrayOf(backgroundDrawable, strokeDrawable))
+
+        val qsbBackground = if (strokeWidth != 0f) combinedDrawable else backgroundDrawable
+
         with(inner) {
             clipToOutline = cornerRadius > 0
-            background = PaintDrawable(color).apply {
-                setCornerRadius(cornerRadius)
-            }
+            background = qsbBackground
         }
     }
 

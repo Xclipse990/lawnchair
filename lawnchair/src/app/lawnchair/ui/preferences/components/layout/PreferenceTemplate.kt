@@ -33,6 +33,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.util.addIf
@@ -61,6 +62,7 @@ fun PreferenceTemplate(
             verticalAlignment = verticalAlignment,
             modifier = modifier
                 .height(IntrinsicSize.Min)
+                .semantics(mergeDescendants = true) {}
                 .fillMaxWidth()
                 .addIf(applyPaddings) {
                     padding(horizontal = horizontalPadding, vertical = verticalPadding)

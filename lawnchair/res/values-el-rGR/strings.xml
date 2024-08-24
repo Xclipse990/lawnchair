@@ -275,6 +275,10 @@
     <string name="smartspace_weather">Καιρός</string>
     <string name="smartspace_battery_status">Κατάσταση μπαταρίας</string>
     <string name="smartspace_now_playing">Παίζει Τώρα</string>
+    <!-- Smartspacer strings -->
+    <string name="maximum_number_of_targets">Maximum number of targets</string>
+    <string name="open_smartspacer_settings">Open Smartspacer settings</string>
+    <string name="smartspacer_settings">Smartspacer settings</string>
     <!-- Setup settings -->
     <string name="smartspace_requires_setup">Πατήστε για ρύθμιση</string>
     <string name="event_provider_missing_notification_dots">Για να χρησιμοποιήσετε <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, ενεργοποιήστε τις Κουκκίδες Ειδοποιήσεων.</string>
@@ -304,6 +308,7 @@
     <string name="support_and_pr">Υποστήριξη &amp; PR</string>
     <string name="acknowledgements">Ευχαριστίες</string>
     <string name="translate">Μετάφραση</string>
+    <string name="donate">Δωρεά</string>
     <!--
 
     Backup and restore
@@ -367,6 +372,9 @@
     <!-- General and home screen settings -->
     <string name="home_screen_rotation_label">Περιστροφή αρχικής οθόνης</string>
     <string name="home_screen_rotation_description">Να επιτρέπεται η περιστροφή της αρχικής οθόνης κατά την περιστροφή της συσκευής</string>
+    <string name="wallpaper_blur">Ενεργοποίηση θολώματος ταπετσαρίας</string>
+    <string name="wallpaper_background_blur">Ένταση θολώματος</string>
+    <string name="wallpaper_background_blur_factor">Όριο παράγοντα</string>
     <string name="auto_add_shortcuts_label">Προσθήκη νέων εφαρμογών στην αρχική οθόνη</string>
     <string name="minus_one_enable">Εμφάνιση ροής</string>
     <string name="minus_one_unavailable">Δεν υπάρχουν εγκατεστημένες εφαρμογές ροής</string>
@@ -407,6 +415,9 @@
     <string name="hotseat_mode_label">Γραφικό στοιχείο μπάρας αναζήτησης</string>
     <string name="hotseat_mode_disabled">Απενεργοποιημένο</string>
     <string name="hotseat_mode_google_search">Μπάρα αναζήτησης Google</string>
+    <string name="qsb_hotseat_background_transparency">Αδιαφάνεια φόντου</string>
+    <string name="qsb_hotseat_stroke_width">Πλάτος περιγράμματος</string>
+    <string name="qsb_hotseat_stroke_color">Χρώμα περιγράμματος</string>
     <string name="corner_radius_label">Ακτίνα γωνίας</string>
     <string name="apply_accent_color_label">Εφαρμογή χρώματος έμφασης</string>
     <string name="search_provider">Πάροχος αναζήτησης</string>
@@ -523,5 +534,6 @@
     <string name="grant_requested_permissions">Εκχώρηση δικαιωμάτων</string>
     <string name="hotseat_mode_lawnchair_compose">Εκκινητής Lawnchair (σύνθεση)</string>
     <string name="allapps_web_suggestion_provider_label">Πάροχος προτάσεων ιστού</string>
-    <string name="allapps_use_web_suggestion_icon_label">Show web suggestion provider icon in search bar</string>
+    <string name="allapps_use_web_suggestion_icon_label">Χρήση εικονιδίου παρόχου προτάσεων ιστού στη μπάρα αναζήτησης</string>
+    <string name="allapps_match_qsb_style_label">Ταίριασμα μορφής της μπάρας αναζήτησης με το στυλ της μπάρας εφαρμογών</string>
 </resources>

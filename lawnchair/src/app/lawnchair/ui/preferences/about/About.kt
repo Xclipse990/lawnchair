@@ -151,7 +151,7 @@ private val product = listOf(
         name = "Yasan Glass",
         role = Role.Development,
         photoUrl = "https://avatars.githubusercontent.com/u/41836211",
-        socialUrl = "https:/yasan.glass",
+        socialUrl = "https://yasan.glass",
     ),
 )
 
@@ -300,8 +300,19 @@ fun About(
                     }
                 },
             )
+            ClickablePreference(
+                label = stringResource(id = R.string.donate),
+                onClick = {
+                    val webpage = Uri.parse(OPENCOLLECTIVE_FUNDING_URL)
+                    val intent = Intent(Intent.ACTION_VIEW, webpage)
+                    if (intent.resolveActivity(context.packageManager) != null) {
+                        context.startActivity(intent)
+                    }
+                },
+            )
         }
     }
 }
 
+private const val OPENCOLLECTIVE_FUNDING_URL = "https://opencollective.com/lawnchair"
 private const val CROWDIN_URL = "https://lawnchair.crowdin.com/lawnchair"

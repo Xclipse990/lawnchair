@@ -115,8 +115,9 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
         val supportsLens = searchProvider == Google || searchProvider == PixelSearch
 
         val lensIntent = getLensIntent(context)
+        val voiceIntent = AssistantIconView.getVoiceIntent(searchProvider, context)
 
-        micIcon.isVisible = shouldShowIcons
+        micIcon.isVisible = shouldShowIcons && voiceIntent != null
         lensIcon.isVisible = shouldShowIcons && supportsLens && lensIntent != null
 
         with(input) {
@@ -127,7 +128,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
             }
             addTextChangedListener {
                 actionButton.isVisible = !it.isNullOrEmpty()
-                micIcon.isVisible = shouldShowIcons && it.isNullOrEmpty()
+                micIcon.isVisible = shouldShowIcons && voiceIntent != null && it.isNullOrEmpty()
                 lensIcon.isVisible = shouldShowIcons && supportsLens && lensIntent != null && it.isNullOrEmpty()
             }
         }
@@ -162,6 +163,9 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
             }
             with(micIcon) {
                 setIcon(isGoogle, themed)
+                setOnClickListener {
+                    context.startActivity(voiceIntent)
+                }
             }
             with(lensIcon) {
                 if (lensIntent != null) {

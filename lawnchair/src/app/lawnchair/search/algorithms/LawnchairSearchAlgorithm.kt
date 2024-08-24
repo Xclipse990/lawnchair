@@ -70,6 +70,7 @@ sealed class LawnchairSearchAlgorithm(
             .removeDuplicateDividers()
             .toList()
 
+        val appAndShortcutIndices = findAppAndShorcutIndices(filtered)
         val smallIconIndices = findIndices(filtered, SMALL_ICON_HORIZONTAL_TEXT)
         val iconRowIndices = findIndices(filtered, ICON_HORIZONTAL_TEXT)
         val peopleTileIndices = findIndices(filtered, PEOPLE_TILE)
@@ -83,7 +84,13 @@ sealed class LawnchairSearchAlgorithm(
             val isFirst = index == 0 || filtered[index - 1].isDivider
             val isLast = index == filtered.lastIndex || filtered[index + 1].isDivider
 
-            if (target.extras.getBoolean(EXTRA_QUICK_LAUNCH, false)) {
+            // todo make quick launch work on non-app results
+            if (
+                (target.isApp && target.layoutType == SMALL_ICON_HORIZONTAL_TEXT) ||
+                target.isShortcut
+            ) {
+                SearchAdapterItem.createAdapterItem(target, getGroupedBackground(index, appAndShortcutIndices))
+            } else if (target.layoutType == ICON_SINGLE_VERTICAL_TEXT && target.extras.getBoolean(EXTRA_QUICK_LAUNCH, false)) {
                 SearchAdapterItem.createAdapterItem(target, normalBackground)
             } else {
                 val background = getBackground(
@@ -116,8 +123,21 @@ sealed class LawnchairSearchAlgorithm(
 
     private fun findIndices(filtered: List<SearchTargetCompat>, layoutType: String): List<Int> {
         return filtered.indices.filter {
-            filtered[it].layoutType == layoutType
+            filtered[it].layoutType == layoutType && !filtered[it].isApp
         }
+    }
+
+    private fun findAppAndShorcutIndices(filtered: List<SearchTargetCompat>): List<Int> {
+        val appAndShortcutIndices =
+            filtered.indices.filter {
+                (filtered[it].isApp || filtered[it].isShortcut) &&
+                    (
+                        filtered[it].layoutType == ICON_HORIZONTAL_TEXT ||
+                            filtered[it].layoutType == SMALL_ICON_HORIZONTAL_TEXT
+                        )
+            }
+
+        return appAndShortcutIndices
     }
 
     private fun getBackground(
@@ -180,13 +200,17 @@ sealed class LawnchairSearchAlgorithm(
             val searchAlgorithm = prefs.searchAlgorithm.firstBlocking()
 
             return when {
-                searchAlgorithm == ASI_SEARCH && isASISearchEnabled(context) -> LawnchairASISearchAlgorithm(context)
+                searchAlgorithm == ASI_SEARCH && isASISearchEnabled(context) -> LawnchairASISearchAlgorithm(
+                    context,
+                )
+
                 searchAlgorithm == LOCAL_SEARCH -> LawnchairLocalSearchAlgorithm(context)
                 else -> LawnchairAppSearchAlgorithm(context)
             }
         }
     }
 }
+
 private fun Sequence<SearchTargetCompat>.removeDuplicateDividers(): Sequence<SearchTargetCompat> {
     var previousWasDivider = true
     return filter { item ->
