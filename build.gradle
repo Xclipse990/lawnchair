@@ -141,7 +141,6 @@ android {
         versionName "${versionDisplayName}"
         buildConfigField "String", "VERSION_DISPLAY_NAME", "\"${versionDisplayName}\""
         buildConfigField "String", "MAJOR_VERSION", "\"${majorVersion}\""
-        buildConfigField "String", "COMMIT_HASH", "\"${buildCommit}\""
         buildConfigField "boolean", "ENABLE_AUTO_INSTALLS_LAYOUT", "false"
 
         manifestPlaceholders.quickstepMinSdk = quickstepMinSdk
@@ -149,16 +148,25 @@ android {
         buildConfigField "int", "QUICKSTEP_MIN_SDK", quickstepMinSdk
         buildConfigField "int", "QUICKSTEP_MAX_SDK", quickstepMaxSdk
     }
-
-    applicationVariants.configureEach { variant ->
-        variant.outputs.configureEach {
-            def channel = variant.productFlavors.last().name
-            outputFileName = "Lawnchair.${variant.versionName}.$channel.${variant.buildType.name}.apk"
+    androidComponents {
+        onVariants(selector().all()) { variant ->
+            def capName = variant.name.capitalize()
+            def licenseeTask = tasks.named("licenseeAndroid$capName", LicenseeTask)
+            def copyArtifactsTask = tasks.register("copy${capName}Artifacts", Copy) {
+                dependsOn(licenseeTask)
+                from(licenseeTask.map { it.outputDir.file("artifacts.json") })
+                into(layout.buildDirectory.dir("generated/dependencyAssets"))
+            }
+            variant.sources.assets?.addGeneratedSourceDirectory(licenseeTask) {
+                objects.directoryProperty().fileProvider(copyArtifactsTask.map { it.destinationDir })
+            }
         }
     }
 
-    androidResources {
-        generateLocaleConfig true
+    applicationVariants.configureEach { variant ->
+        variant.outputs.configureEach {
+            outputFileName = "Lawnchair ${variant.versionName}.apk"
+        }
     }
 
     buildFeatures {
@@ -206,18 +214,15 @@ android {
         .toArray()
 
     buildTypes {
-        all {
-            signingConfig releaseSigning
-            pseudoLocalesEnabled true
-        }
-
         debug {
             applicationIdSuffix ".debug"
             resValue("string", "derived_app_name", "Lawnchair (Debug)")
+            signingConfig releaseSigning
         }
 
         release {
             resValue("string", "derived_app_name", "Lawnchair")
+            signingConfig releaseSigning
             minifyEnabled true
             shrinkResources true
             proguardFiles proguardFilesFromAosp + "proguard.pro"
@@ -233,28 +238,38 @@ android {
         includeInBundle = false
     }
 
+    // The flavor dimensions for build variants (e.g. aospWithQuickstep, aospWithoutQuickstep)
     // See: https://developer.android.com/studio/build/build-variants#flavor-dimensions
-    flavorDimensions += ["app", "recents", "channel"]
+    flavorDimensions += ["app", "recents"]
 
     productFlavors {
+        aosp {
+            dimension "app"
+            applicationId 'com.android.launcher3'
+            testApplicationId 'com.android.launcher3.tests'
+        }
+
+        l3go {
+            dimension "app"
+            applicationId 'com.android.launcher3'
+            testApplicationId 'com.android.launcher3.tests'
+        }
+
         lawn {
             dimension "app"
+            applicationId 'app.lawnchair'
+            testApplicationId 'com.android.launcher3.tests'
+            isDefault true
         }
 
         withQuickstep {
             dimension "recents"
             minSdk 26
-        }
-
-        github {
-            applicationId 'app.lawnchair'
-            dimension "channel"
-        }
-
-        market {
-            applicationId "ch.deletescape.lawnchair.plah"
-            dimension "channel"
             isDefault true
+        }
+
+        withoutQuickstep {
+            dimension "recents"
         }
 
         configureEach {
@@ -272,6 +287,42 @@ android {
             }
         }
 
+        androidTest {
+            res.srcDirs = ['tests/res']
+            java.srcDirs = ['tests/src', 'tests/tapl']
+            manifest.srcFile "tests/AndroidManifest-common.xml"
+        }
+
+        androidTestDebug {
+            manifest.srcFile "tests/AndroidManifest.xml"
+        }
+
+        aosp {
+            java.srcDirs = ['src_flags', 'src_shortcuts_overrides']
+        }
+
+        aospWithoutQuickstep {
+            manifest.srcFile "AndroidManifest.xml"
+        }
+
+        aospWithQuickstep {
+            manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
+        }
+
+        l3go {
+            res.srcDirs = ['go/res']
+            java.srcDirs = ['go/src']
+            manifest.srcFile "go/AndroidManifest.xml"
+        }
+
+        l3goWithoutQuickstepDebug {
+            manifest.srcFile "AndroidManifest.xml"
+        }
+
+        l3goWithQuickstepDebug {
+            manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
+        }
+
         lawn {
             java.srcDirs = ['src_flags', 'src_shortcuts_overrides', 'lawnchair/src', 'tests/shared']
             aidl.srcDirs = ['lawnchair/aidl']
@@ -285,35 +336,23 @@ android {
             }
         }
 
-        lawnWithQuickstepGithub {
-            manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
+        lawnWithoutQuickstep {
+            manifest.srcFile "AndroidManifest.xml"
         }
 
-        lawnWithQuickstepMarket {
+        lawnWithQuickstep {
             manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
+            assets.srcDir layout.buildDirectory.dir("generated/dependencyAssets/")
+        }
+
+        withoutQuickstep {
+            java.srcDirs = ['src_ui_overrides']
         }
 
         withQuickstep {
             res.srcDirs = ['quickstep/res', 'quickstep/recents_ui_overrides/res']
             java.srcDirs = ['quickstep/src', 'quickstep/recents_ui_overrides/src']
             manifest.srcFile "quickstep/AndroidManifest.xml"
-        }
-    }
-}
-
-androidComponents {
-    onVariants(selector().all()) { variant ->
-        def capName = variant.name.capitalize()
-        def licenseeTask = tasks.named("licenseeAndroid$capName", LicenseeTask)
-        def copyArtifactsTask = tasks.register("copy${capName}Artifacts", Copy) {
-            dependsOn(licenseeTask)
-            from(licenseeTask.map { it.jsonOutput })
-            // Copy artifacts.json to a new directory.
-            into(layout.buildDirectory.dir("generated/dependencyAssets/${variant.name}"))
-        }
-        variant.sources.assets?.addGeneratedSourceDirectory(licenseeTask) {
-            // Avoid using LicenseeTask::outputDir as it contains extra files that we don't need.
-            objects.directoryProperty().fileProvider(copyArtifactsTask.map { it.destinationDir })
         }
     }
 }
@@ -348,6 +387,9 @@ dependencies {
 
     implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell-14.jar')
     withQuickstepCompileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'framework-14.jar')
+
+    // Required for AOSP to compile. This is already included in the sysui_shared.jar
+    withoutQuickstepImplementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'plugin_core.jar')
 
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
 
