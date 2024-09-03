@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-release-apk:
-    runs-on: macos-14
+    runs-on: ubuntu-latest
     continue-on-error: true
     steps:
       - uses: actions/checkout@v4
@@ -32,7 +32,7 @@ jobs:
             echo ${{ secrets.KEYSTORE }} | base64 --decode > ${{ github.workspace }}/key.jks
           fi
       - name: Build release APK
-        run: ./gradlew assembleLawnWithQuickstepGithubRelease bundleLawnWithQuickstepPlayRelease
+        run: ./gradlew assembleLawnWithQuickstepGithubRelease
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
