@@ -60,6 +60,7 @@ import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.LockedUserState;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Partner;
+import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.WindowBounds;
 import com.android.launcher3.util.window.WindowManagerProxy;
 import org.xmlpull.v1.XmlPullParser;
@@ -76,12 +77,17 @@ import java.util.stream.Collectors;
 
 import app.lawnchair.DeviceProfileOverrides;
 
-public class InvariantDeviceProfile {
+public class InvariantDeviceProfile implements SafeCloseable {
 
         public static final String TAG = "IDP";
         // We do not need any synchronization for this variable as its only written on UI thread.
         public static final MainThreadInitializedObject<InvariantDeviceProfile> INSTANCE =
                 new MainThreadInitializedObject<>(InvariantDeviceProfile::new);
+
+        @Override
+        public void close() {
+
+        }
 
         @Retention(RetentionPolicy.SOURCE)
         @IntDef({TYPE_PHONE, TYPE_MULTI_DISPLAY, TYPE_TABLET})
