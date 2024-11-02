@@ -17,11 +17,11 @@ android {
     }
 }
 
-addFrameworkJar('framework-14.jar')
+addFrameworkJar('framework-15.jar')
 compileOnlyCommonJars()
 
 dependencies {
     compileOnly projects.systemUIPluginCore
     compileOnly projects.systemUICommon
-    implementation 'com.google.errorprone:error_prone_annotations:2.35.1'
+    implementation 'com.google.errorprone:error_prone_annotations:2.33.0'
 }

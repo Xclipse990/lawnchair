@@ -38,9 +38,9 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
-      - uses: gradle/gradle-build-action@v2
+      - uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-home-cache-cleanup: true
+          cache-encryption-key: Da25KUVSE5jbGds2zXmfXw==
       - name: Write sign info
         if: github.repository_owner == 'LawnchairLauncher'
         run: |
@@ -52,12 +52,12 @@ jobs:
             echo ${{ secrets.KEYSTORE }} | base64 --decode > ${{ github.workspace }}/key.jks
           fi
       - name: Build debug APK
-        run: ./gradlew assembleLawnWithQuickstepDebug
+        run: ./gradlew assembleLawnWithQuickstepGithubDebug assembleLawnWithQuickstepPlayDebug
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: Debug APK
-          path: build/outputs/apk/lawnWithQuickstep/debug/*.apk
+          path: build/outputs/apk/**/*.apk
 
   check-style:
     runs-on: ubuntu-latest
@@ -69,9 +69,7 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 21
-      - uses: gradle/gradle-build-action@v2
-        with:
-          gradle-home-cache-cleanup: true
+      - uses: gradle/actions/setup-gradle@v4
       - run: ./gradlew spotlessCheck
 
   send-notifications:
@@ -127,10 +125,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
-      # Rename because the # symbol causes errors in GH release command.
+      # Note the # and () symbols are not supported in GitHub Release filenames, even manually
+      - name: Export APK_NAME for later use
+        run: echo "APK_NAME=Lawnchair.Debug.${{ github.ref_name }}.Nightly-CI_${{ github.run_number }}-$(echo ${{ github.sha }} | cut -c1-7).apk" >> $GITHUB_ENV
       - name: Rename .apk file
-        run: mv ./Debug\ APK/lawnWithQuickstepGithub/debug/*.apk ./debug.apk
+        run: mv "./Debug APK/lawnWithQuickstepGithub/debug/"*.apk "./$APK_NAME"
       - name: Delete release if exist then create release
-        run: gh release view "nightly" && gh release delete "nightly" -y --cleanup-tag ; gh release create "nightly" "./debug.apk" -p --generate-notes
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release view "nightly" && gh release delete "nightly" -y --cleanup-tag
+          gh release create "nightly" "./$APK_NAME" -p -t "Lawnchair Nightly" --generate-notes
