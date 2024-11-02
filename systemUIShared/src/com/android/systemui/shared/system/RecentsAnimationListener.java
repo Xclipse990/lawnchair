@@ -39,6 +39,12 @@ public interface RecentsAnimationListener {
             RemoteAnimationTarget[] apps, RemoteAnimationTarget[] wallpapers,
             Rect homeContentInsets, Rect minimizedHomeBounds);
 
+    // Introduced in NothingOS 2.5.5, needed in 2.6
+    void onAnimationStart(RecentsAnimationControllerCompat controller,
+            TransitionInfo transitionInfo, SurfaceControl.Transaction transaction,
+            RemoteAnimationTarget[] apps, RemoteAnimationTarget[] wallpapers,
+            Rect homeContentInsets, Rect minimizedHomeBounds);
+
     /**
      * Called when the animation into Recents was canceled. This call is made on the binder thread.
      */

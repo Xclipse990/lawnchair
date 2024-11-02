@@ -113,6 +113,18 @@ public class RecentsAnimationCallbacks implements
         onAnimationStart(controller, apps, wallpapers, homeContentInsets, minimizedHomeBounds);
     }
 
+    // Introduced in NothingOS 2.5.5, needed in 2.6
+    @BinderThread
+    public final void onAnimationStart(RecentsAnimationControllerCompat controller,
+            TransitionInfo transitionInfo, SurfaceControl.Transaction transaction,
+            RemoteAnimationTarget[] apps, RemoteAnimationTarget[] wallpapers,
+            Rect homeContentInsets, Rect minimizedHomeBounds) {
+        if (transaction != null) {
+            transaction.apply();
+        }
+        onAnimationStart(controller, apps, wallpapers, homeContentInsets, minimizedHomeBounds);
+    }
+
     // Called only in R+ platform
     @BinderThread
     public final void onAnimationStart(RecentsAnimationControllerCompat animationController,
