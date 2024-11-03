@@ -235,7 +235,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         mIsImeRenderingNavButtons = app.lawnchair.LawnchairApp.isAtleastT()
                 ? InputMethodService.canImeRenderGesturalNavButtons() && mContext.imeDrawsImeNavBar()
                 : mContext.imeDrawsImeNavBar();
-        mDisplayController = DisplayController.INSTANCE.get(mContext);
+//        mDisplayController = DisplayController.INSTANCE.get(mContext);
 
         if (!mIsImeRenderingNavButtons) {
             // IME switcher

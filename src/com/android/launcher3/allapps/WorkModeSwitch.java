@@ -65,6 +65,7 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
     private final int mScrollThreshold;
     private ImageView mIcon;
     private TextView mTextView;
+    private ImageView mIcon;
 
     public WorkModeSwitch(@NonNull Context context) {
         this(context, null, 0);

@@ -40,6 +40,11 @@ public class DefaultSearchAdapterProvider extends SearchAdapterProvider<Activity
     }
 
     @Override
+    public RecyclerView.ItemDecoration getDecorator() {
+        return null;
+    }
+
+    @Override
     public void onBindView(AllAppsGridAdapter.ViewHolder holder, int position) {
         if (position == 0) {
             mHighlightedView = holder.itemView;

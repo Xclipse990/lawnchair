@@ -140,7 +140,7 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
     public boolean onLongClick(View v) {
         TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "Widgets.onLongClick");
         v.cancelLongPress();
-        if (!ItemLongClickListener.canStartDrag(mActivityContext))
+        if (!ItemLongClickListener.canStartDrag(Launcher.getLauncher(mActivityContext)))
             return false;
 
         if (v instanceof WidgetCell) {

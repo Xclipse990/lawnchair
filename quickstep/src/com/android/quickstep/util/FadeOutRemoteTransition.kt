@@ -84,5 +84,5 @@ class FadeOutRemoteTransition : IRemoteTransition.Stub() {
         Executors.MAIN_EXECUTOR.execute { anim.start() }
     }
 
-    fun onTransitionConsumed(transition: IBinder?, aborted: Boolean) {}
+    override fun onTransitionConsumed(transition: IBinder?, aborted: Boolean) {}
 }

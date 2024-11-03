@@ -512,8 +512,7 @@ abstract class TutorialFragment extends GestureSandboxFragment implements OnTouc
     }
 
     protected boolean isRotationPromptShowing() {
-        GestureSandboxActivity activity = getGestureSandboxActivity();
-        return activity != null && activity.isRotationPromptShowing();
+        return false;
     }
 
     @Nullable

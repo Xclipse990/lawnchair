@@ -221,7 +221,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
         Display display = getWindowManager().getDefaultDisplay();
         Point mwSize = new Point();
         display.getSize(mwSize);
-        return new WindowBounds(new Rect(0, 0, mwSize.x, mwSize.y), new Rect());
+        return new WindowBounds(new Rect(0, 0, mwSize.x, mwSize.y), new Rect ());
     }
 
     @Override

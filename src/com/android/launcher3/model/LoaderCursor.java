@@ -112,6 +112,7 @@ public class LoaderCursor extends CursorWrapper {
     public int container;
     public int itemType;
     public int restoreFlag;
+    private PreferenceManager2 preferenceManager2;
 
     private final PreferenceManager2 preferenceManager2;
 

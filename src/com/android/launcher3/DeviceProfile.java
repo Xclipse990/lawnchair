@@ -1201,10 +1201,6 @@ public class DeviceProfile {
             } else {
                 cellContentDimensions.resizeToFitCellHeight(cellHeightPx, mIconSizeSteps);
             }
-            iconSizePx = cellContentDimensions.getIconSizePx();
-            iconDrawablePaddingPx = cellContentDimensions.getIconDrawablePaddingPx();
-            iconTextSizePx = cellContentDimensions.getIconTextSizePx();
-            int cellContentHeight = cellContentDimensions.getCellContentHeight();
 
             cellYPaddingPx = Math.max(0, cellHeightPx - cellContentHeight) / 2;
         } else if (mIsScalableGrid) {
