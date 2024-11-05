@@ -2,9 +2,6 @@ name: Build release APK
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - 14-testing
 
 jobs:
   build-release-apk:
