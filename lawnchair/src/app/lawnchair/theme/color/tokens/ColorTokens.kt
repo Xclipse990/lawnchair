@@ -104,7 +104,7 @@ object ColorTokens {
 
     @JvmField val DotColor = Accent3_200
 
-    @JvmField val FolderBackgroundColor = DayNightColorToken(Neutral1_50,Neutral2_900)
+    @JvmField val FolderBackgroundColor = DayNightColorToken(Neutral1_50, Neutral2_900)
 
     @JvmField val FolderIconBorderColor = ColorPrimary
 
