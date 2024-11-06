@@ -45,6 +45,7 @@ object ColorTokens {
     val Accent2_500 = SwatchColorToken(Swatch.Accent2, Shade.S500)
     val Accent2_600 = SwatchColorToken(Swatch.Accent2, Shade.S600)
     val Accent2_800 = SwatchColorToken(Swatch.Accent2, Shade.S800)
+    val Accent2_900 = SwatchColorToken(Swatch.Accent2, Shade.S900)
 
     val Accent3_10 = SwatchColorToken(Swatch.Accent3, Shade.S10)
     val Accent3_50 = SwatchColorToken(Swatch.Accent3, Shade.S50)
@@ -76,7 +77,7 @@ object ColorTokens {
 
     @JvmField val TextColorSecondary = DayNightColorToken(StaticColorToken(0xde000000), Neutral2_200)
 
-    @JvmField val AllAppsHeaderProtectionColor = DayNightColorToken(Neutral1_100, Neutral1_700)
+    @JvmField val AllAppsHeaderProtectionColor = DayNightColorToken(Neutral1_100, Neutral2_600.setLStar(15.0))
 
     @JvmField val AllAppsScrimColor = ColorBackground
 
@@ -109,7 +110,7 @@ object ColorTokens {
 
     @JvmField val FolderPaginationColor = DayNightColorToken(Accent1_600, Accent2_100)
 
-    @JvmField val FolderPreviewColor = DayNightColorToken(Accent2_200, Neutral1_800)
+    @JvmField val FolderPreviewColor = DayNightColorToken(Accent2_200, Accent2_900)
 
     @JvmField val PopupColorPrimary = DayNightColorToken(Accent2_50, Neutral2_800)
 
