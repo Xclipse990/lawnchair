@@ -25,6 +25,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherModel.ModelUpdateTask;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.shortcuts.ShortcutKey;
@@ -41,7 +42,7 @@ import java.util.Iterator;
 /**
  * Task to handle changing of lock state of the user
  */
-public class UserLockStateChangedTask extends BaseModelUpdateTask {
+public class UserLockStateChangedTask implements ModelUpdateTask {
 
     @NonNull
     private final UserHandle mUser;
@@ -53,8 +54,9 @@ public class UserLockStateChangedTask extends BaseModelUpdateTask {
     }
 
     @Override
-    public void execute(@NonNull final LauncherAppState app, @NonNull final BgDataModel dataModel,
-            @NonNull final AllAppsList apps) {
+    public void execute(@NonNull ModelTaskController taskController, @NonNull BgDataModel dataModel,
+            @NonNull AllAppsList apps) {
+        LauncherAppState app = taskController.getApp();
         Context context = app.getContext();
 
         HashMap<ShortcutKey, ShortcutInfo> pinnedShortcuts = new HashMap<>();
@@ -99,9 +101,10 @@ public class UserLockStateChangedTask extends BaseModelUpdateTask {
                 }
             });
         }
-        bindUpdatedWorkspaceItems(updatedWorkspaceItemInfos);
+        taskController.bindUpdatedWorkspaceItems(updatedWorkspaceItemInfos);
         if (!removedKeys.isEmpty()) {
-            deleteAndBindComponentsRemoved(ItemInfoMatcher.ofShortcutKeys(removedKeys),
+            taskController.deleteAndBindComponentsRemoved(
+                    ItemInfoMatcher.ofShortcutKeys(removedKeys),
                     "removed during unlock because it's no longer available"
                             + " (possibly due to clear data)");
         }
@@ -119,6 +122,6 @@ public class UserLockStateChangedTask extends BaseModelUpdateTask {
                     null, mUser,
                     new ShortcutRequest(context, mUser).query(ShortcutRequest.ALL));
         }
-        bindDeepShortcuts(dataModel);
+        taskController.bindDeepShortcuts(dataModel);
     }
 }

@@ -18,7 +18,6 @@ package com.android.launcher3.secondarydisplay;
 import static android.view.View.MeasureSpec.EXACTLY;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_MATERIAL_U_POPUP;
 import static com.android.launcher3.popup.SystemShortcut.APP_INFO;
 
 import android.content.Context;
@@ -45,7 +44,6 @@ import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**

@@ -20,7 +20,6 @@ import static android.view.View.MeasureSpec.EXACTLY;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 
 import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
-import static com.android.launcher3.Utilities.getBadge;
 import static com.android.launcher3.icons.FastBitmapDrawable.getDisabledColorFilter;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
@@ -31,6 +30,7 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.TargetApi;
+import android.appwidget.AppWidgetHostView;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -45,11 +45,13 @@ import android.graphics.drawable.PictureDrawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.dynamicanimation.animation.FloatPropertyCompat;
 import androidx.dynamicanimation.animation.SpringAnimation;
@@ -244,8 +246,6 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
     public void setItemInfo(final ItemInfo info) {
         // Load the adaptive icon on a background thread and add the view in ui thread.
         MODEL_EXECUTOR.getHandler().postAtFrontOfQueue(() -> {
-            Object[] outObj = new Object[1];
-            boolean[] outIsIconThemed = new boolean[1];
             int w = mWidth;
             int h = mHeight;
             Pair<AdaptiveIconDrawable, Drawable> fullDrawable = Utilities.getFullDrawable(
@@ -259,11 +259,8 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
                 bounds.inset(blurMargin, blurMargin);
                 // Badge is applied after icon normalization so the bounds for badge should not
                 // be scaled down due to icon normalization.
-                mBadge = getBadge(mActivity, info, outObj[0], outIsIconThemed[0]);
+                mBadge = fullDrawable.second;
                 FastBitmapDrawable.setBadgeBounds(mBadge, bounds);
-
-                // Do not draw the background in case of folder as its translucent
-                final boolean shouldDrawBackground = !(dr instanceof FolderAdaptiveIcon);
 
                 try (LauncherIcons li = LauncherIcons.obtain(mActivity)) {
                     // Since we just want the scale, avoid heavy drawing operations
@@ -271,7 +268,6 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
                             new AdaptiveIconDrawable(new ColorDrawable(Color.BLACK), null),
                             null, null, null));
                 }
-                AdaptiveIconDrawable adaptiveIcon = (AdaptiveIconDrawable) dr;
 
                 // Shrink very tiny bit so that the clip path is smaller than the original bitmap
                 // that has anti aliased edges and shadows.
@@ -568,6 +564,11 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
         return mContentViewParent;
     }
 
+    /** Return true if {@link mContent} is a {@link AppWidgetHostView}. */
+    public boolean containsAppWidgetHostView() {
+        return mContent instanceof AppWidgetHostView;
+    }
+
     private static class SpringFloatValue {
 
         private static final FloatPropertyCompat<SpringFloatValue> VALUE =
@@ -620,7 +621,7 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
     /**
      * Removes any stray DragView from the DragLayer.
      */
-    public static void removeAllViews(ActivityContext activity) {
+    public static void removeAllViews(@NonNull ActivityContext activity) {
         BaseDragLayer dragLayer = activity.getDragLayer();
         // Iterate in reverse order. DragView is added later to the dragLayer,
         // and will be one of the last views.
