@@ -22,15 +22,12 @@ jobs:
         with:
           gradle-home-cache-cleanup: true
       - name: Write sign info
-        if: github.repository == 'LawnchairLauncher/lawnchair'
         run: |
-          if [ ! -z "${{ secrets.KEYSTORE }}" ]; then
+            echo "${{ secrets.KEYSTORE }}" | base64 -d > ${{ github.workspace }}/key.jks
+            echo storeFile='${{ github.workspace }}/key.jks' >> keystore.properties
             echo storePassword='${{ secrets.KEYSTORE_PASSWORD }}' >> keystore.properties
             echo keyAlias='${{ secrets.KEY_ALIAS }}' >> keystore.properties
             echo keyPassword='${{ secrets.KEY_PASSWORD }}' >> keystore.properties
-            echo storeFile='${{ github.workspace }}/key.jks' >> keystore.properties
-            echo ${{ secrets.KEYSTORE }} | base64 --decode > ${{ github.workspace }}/key.jks
-          fi
       - name: Build release APK
         run: ./gradlew assembleLawnWithQuickstepGithubRelease
       - name: Upload artifact
