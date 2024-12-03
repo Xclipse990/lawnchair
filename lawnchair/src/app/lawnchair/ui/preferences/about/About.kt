@@ -20,7 +20,9 @@ import android.content.Intent
 import android.net.Uri
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -40,6 +42,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import app.lawnchair.ui.preferences.LocalIsExpandedScreen
 import app.lawnchair.ui.preferences.components.NavigationActionPreference
 import app.lawnchair.ui.preferences.components.controls.ClickablePreference
@@ -61,6 +64,7 @@ private data class TeamMember(
     val role: Role,
     val photoUrl: String,
     val socialUrl: String,
+    var githubUsername: String? = null,
 )
 
 private data class Link(
@@ -93,6 +97,7 @@ private val product = listOf(
         role = Role.Development,
         photoUrl = "https://avatars.githubusercontent.com/u/10363352",
         socialUrl = "https://github.com/Goooler",
+        githubUsername = "Goooler",
     ),
     TeamMember(
         name = "Harsh Shandilya",
@@ -105,6 +110,7 @@ private val product = listOf(
         role = Role.Development,
         photoUrl = "https://avatars.githubusercontent.com/u/36076410",
         socialUrl = "https://github.com/MrSluffy",
+        githubUsername = "MrSluffy",
     ),
     TeamMember(
         name = "Kshitij Gupta",
@@ -141,12 +147,14 @@ private val product = listOf(
         role = Role.Development,
         photoUrl = "https://avatars.githubusercontent.com/u/70206496",
         socialUrl = "https://github.com/SuperDragonXD",
+        githubUsername = "SuperDragonXD",
     ),
     TeamMember(
         name = "Yasan Glass",
         role = Role.Development,
         photoUrl = "https://avatars.githubusercontent.com/u/41836211",
-        socialUrl = "https:/yasan.glass",
+        socialUrl = "https://yasan.glass",
+        githubUsername = "yasanglass",
     ),
 )
 
@@ -203,6 +211,7 @@ object AboutRoutes {
     const val LICENSES = "licenses"
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun About(
     modifier: Modifier = Modifier,
@@ -235,6 +244,13 @@ fun About(
                 text = BuildConfig.VERSION_DISPLAY_NAME,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.combinedClickable(
+                    onClick = {},
+                    onLongClick = {
+                        val commitUrl = "https://github.com/LawnchairLauncher/lawnchair/commit/${BuildConfig.COMMIT_HASH}"
+                        context.startActivity(Intent(Intent.ACTION_VIEW, commitUrl.toUri()))
+                    },
+                ),
             )
             Spacer(modifier = Modifier.requiredHeight(16.dp))
             Row(
@@ -259,6 +275,7 @@ fun About(
                     description = stringResource(it.role.descriptionResId),
                     url = it.socialUrl,
                     photoUrl = it.photoUrl,
+                    githubUsername = it.githubUsername,
                 )
             }
         }
@@ -269,6 +286,7 @@ fun About(
                     description = stringResource(it.role.descriptionResId),
                     url = it.socialUrl,
                     photoUrl = it.photoUrl,
+                    githubUsername = null,
                 )
             }
         }
@@ -287,8 +305,19 @@ fun About(
                     }
                 },
             )
+            ClickablePreference(
+                label = stringResource(id = R.string.donate),
+                onClick = {
+                    val webpage = Uri.parse(OPENCOLLECTIVE_FUNDING_URL)
+                    val intent = Intent(Intent.ACTION_VIEW, webpage)
+                    if (intent.resolveActivity(context.packageManager) != null) {
+                        context.startActivity(intent)
+                    }
+                },
+            )
         }
     }
 }
 
+private const val OPENCOLLECTIVE_FUNDING_URL = "https://opencollective.com/lawnchair"
 private const val CROWDIN_URL = "https://lawnchair.crowdin.com/lawnchair"
