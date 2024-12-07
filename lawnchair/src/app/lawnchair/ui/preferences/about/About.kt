@@ -66,6 +66,7 @@ private data class TeamMember(
     val role: Role,
     val photoUrl: String,
     val socialUrl: String,
+    var githubUsername: String? = null,
 )
 
 private data class Link(
@@ -98,6 +99,7 @@ private val product = listOf(
         role = Role.Development,
         photoUrl = "https://avatars.githubusercontent.com/u/10363352",
         socialUrl = "https://github.com/Goooler",
+        githubUsername = "Goooler",
     ),
     TeamMember(
         name = "Harsh Shandilya",
@@ -110,6 +112,7 @@ private val product = listOf(
         role = Role.Development,
         photoUrl = "https://avatars.githubusercontent.com/u/36076410",
         socialUrl = "https://github.com/MrSluffy",
+        githubUsername = "MrSluffy",
     ),
     TeamMember(
         name = "Kshitij Gupta",
@@ -146,12 +149,14 @@ private val product = listOf(
         role = Role.Development,
         photoUrl = "https://avatars.githubusercontent.com/u/70206496",
         socialUrl = "https://github.com/SuperDragonXD",
+        githubUsername = "SuperDragonXD",
     ),
     TeamMember(
         name = "Yasan Glass",
         role = Role.Development,
         photoUrl = "https://avatars.githubusercontent.com/u/41836211",
         socialUrl = "https://yasan.glass",
+        githubUsername = "yasanglass",
     ),
 )
 
@@ -272,6 +277,7 @@ fun About(
                     description = stringResource(it.role.descriptionResId),
                     url = it.socialUrl,
                     photoUrl = it.photoUrl,
+                    githubUsername = it.githubUsername,
                 )
             }
         }
@@ -282,6 +288,7 @@ fun About(
                     description = stringResource(it.role.descriptionResId),
                     url = it.socialUrl,
                     photoUrl = it.photoUrl,
+                    githubUsername = null,
                 )
             }
         }

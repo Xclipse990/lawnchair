@@ -179,10 +179,14 @@ public class AppEventProducer implements StatsLogConsumer {
                 sendEvent(atomInfo, ACTION_PIN, CONTAINER_HOTSEAT_PREDICTION);
             }
         } else if (event == LAUNCHER_ONRESUME) {
-            AppTarget target = new AppTarget.Builder(new AppTargetId("launcher:launcher"),
+            if (Utilities.ATLEAST_Q) {
+                AppTarget target = new AppTarget.Builder(new AppTargetId("launcher:launcher"),
                     mContext.getPackageName(), Process.myUserHandle())
                     .build();
-            sendEvent(target, atomInfo, ACTION_LAUNCH, CONTAINER_PREDICTION);
+                sendEvent(target, atomInfo, ACTION_LAUNCH, CONTAINER_PREDICTION);
+            } else {
+                sendEvent(atomInfo, ACTION_LAUNCH, CONTAINER_PREDICTION);
+            }
         } else if (event == LAUNCHER_DISMISS_PREDICTION_UNDO) {
             sendEvent(atomInfo, ACTION_UNDISMISS, CONTAINER_HOTSEAT_PREDICTION);
         } else if (event == LAUNCHER_WIDGET_ADD_BUTTON_TAP) {
@@ -252,6 +256,9 @@ public class AppEventProducer implements StatsLogConsumer {
             if (shortcutInfo != null) {
                 return new AppTarget.Builder(new AppTargetId(id), shortcutInfo).build();
             }
+            if (!Utilities.ATLEAST_Q) {
+                return null;
+            }
             return new AppTarget.Builder(new AppTargetId(id), cn.getPackageName(), userHandle)
                     .setClassName(cn.getClassName())
                     .build();
@@ -261,9 +268,13 @@ public class AppEventProducer implements StatsLogConsumer {
 
 
     private AppTarget createTempFolderTarget() {
-        return new AppTarget.Builder(new AppTargetId("folder:" + SystemClock.uptimeMillis()),
+        try {
+            return new AppTarget.Builder(new AppTargetId("folder:" + SystemClock.uptimeMillis()),
                 mContext.getPackageName(), Process.myUserHandle())
                 .build();
+        } catch (NoClassDefFoundError e) {
+            return null;
+        }
     }
 
     private String getContainer(LauncherAtom.ItemInfo info) {
