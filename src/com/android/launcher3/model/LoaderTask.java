@@ -16,10 +16,14 @@
 
 package com.android.launcher3.model;
 
+import static com.android.launcher3.BuildConfigs.WIDGET_ON_FIRST_SCREEN;
 import static com.android.launcher3.Flags.enableLauncherBrMetricsFixed;
+import static com.android.launcher3.Flags.enableSmartspaceAsAWidget;
 import static com.android.launcher3.Flags.enableSmartspaceRemovalToggle;
 import static com.android.launcher3.LauncherPrefs.IS_FIRST_LOAD_AFTER_RESTORE;
+import static com.android.launcher3.LauncherPrefs.SHOULD_SHOW_SMARTSPACE;
 import static com.android.launcher3.LauncherSettings.Favorites.TABLE_NAME;
+import static com.android.launcher3.folder.FolderGridOrganizer.createFolderGridOrganizer;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_HAS_SHORTCUT_PERMISSION;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_CHANGE_PERMISSION;
@@ -186,8 +190,7 @@ public class LoaderTask implements Runnable {
         LooperIdleLock idleLock = mLauncherBinder.newIdleLock(this);
         // Just in case mFlushingWorkerThread changes but we aren't woken up,
         // wait no longer than 1sec at a time
-        while (!mStopped && idleLock.awaitLocked(1000))
-            ;
+        while (!mStopped && idleLock.awaitLocked(1000));
     }
 
     private synchronized void verifyNotStopped() throws CancellationException {
@@ -340,17 +343,17 @@ public class LoaderTask implements Runnable {
             verifyNotStopped();
             LauncherPrefs prefs = LauncherPrefs.get(mApp.getContext());
 
-//            if (enableSmartspaceAsAWidget() && prefs.get(SHOULD_SHOW_SMARTSPACE)) {
-//                mLauncherBinder.bindSmartspaceWidget();
-//                // Turn off pref.
-//                prefs.putSync(SHOULD_SHOW_SMARTSPACE.to(false));
-//                logASplit("bindSmartspaceWidget");
-//                verifyNotStopped();
-//            } else if (!enableSmartspaceAsAWidget() && WIDGET_ON_FIRST_SCREEN
-//                    && !prefs.get(LauncherPrefs.SHOULD_SHOW_SMARTSPACE)) {
-//                // Turn on pref.
-//                prefs.putSync(SHOULD_SHOW_SMARTSPACE.to(true));
-//            }
+            if (enableSmartspaceAsAWidget() && prefs.get(SHOULD_SHOW_SMARTSPACE)) {
+                mLauncherBinder.bindSmartspaceWidget();
+                // Turn off pref.
+                prefs.putSync(SHOULD_SHOW_SMARTSPACE.to(false));
+                logASplit("bindSmartspaceWidget");
+                verifyNotStopped();
+            } else if (!enableSmartspaceAsAWidget() && WIDGET_ON_FIRST_SCREEN
+                    && !prefs.get(SHOULD_SHOW_SMARTSPACE)) {
+                // Turn on pref.
+                prefs.putSync(SHOULD_SHOW_SMARTSPACE.to(true));
+            }
 
             if (FeatureFlags.CHANGE_MODEL_DELEGATE_LOADING_ORDER.get()) {
                 mModelDelegate.loadAndBindOtherItems(mLauncherBinder.mCallbacksList);
@@ -574,17 +577,9 @@ public class LoaderTask implements Runnable {
      */
     @WorkerThread
     private void processFolderItems() {
-        // Sort the folder items, update ranks, and make sure all preview items are high
-        // res.
-        List<FolderGridOrganizer> verifiers;
-        
-        if (Utilities.ATLEAST_U) {
-            verifiers = mApp.getInvariantDeviceProfile().supportedProfiles
-                .stream().map(FolderGridOrganizer::new).toList();
-        } else {
-            verifiers = mApp.getInvariantDeviceProfile().supportedProfiles
-                .stream().map(FolderGridOrganizer::new).collect(Collectors.toList());
-        }
+        // Sort the folder items, update ranks, and make sure all preview items are high res.
+        List<FolderGridOrganizer> verifiers = mApp.getInvariantDeviceProfile().supportedProfiles
+                .stream().map(FolderGridOrganizer::createFolderGridOrganizer).collect(Collectors.toList());
         for (CollectionInfo collection : mBgDataModel.collections) {
             if (!(collection instanceof FolderInfo folder)) {
                 continue;

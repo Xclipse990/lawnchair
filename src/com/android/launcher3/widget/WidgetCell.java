@@ -71,6 +71,7 @@ import java.util.function.Consumer;
 
 import app.lawnchair.LawnchairAppWidgetHostView;
 import app.lawnchair.font.FontManager;
+import app.lawnchair.theme.drawable.DrawableTokens;
 
 /**
  * Represents the individual cell of the widget inside the widget tray. The
@@ -162,10 +163,16 @@ public class WidgetCell extends LinearLayout {
         mWidgetName = findViewById(R.id.widget_name);
         mWidgetDims = findViewById(R.id.widget_dims);
         mWidgetDescription = findViewById(R.id.widget_description);
+        mWidgetAddButton = findViewById(R.id.widget_add_button);
+        mWidgetTextContainer = findViewById(R.id.widget_text_container);
 
         FontManager fontManager = FontManager.INSTANCE.get(getContext());
         fontManager.setCustomFont(mWidgetName, R.id.font_body_medium);
         fontManager.setCustomFont(mWidgetDescription, R.id.font_body);
+        
+        // LC: Allow customisability to the Add Button, Test: Press on any Widget on the Widget sheet.
+        mWidgetAddButton.setBackground(DrawableTokens.WidgetAddButtonBackground.resolve(getContext()));
+        fontManager.setCustomFont(mWidgetAddButton, R.id.font_body_medium);
     }
 
     public void setRemoteViewsPreview(RemoteViews view) {

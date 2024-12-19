@@ -16,12 +16,15 @@
 
 package com.android.launcher3.pm;
 
+import static com.android.launcher3.Utilities.ATLEAST_V;
+
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherApps;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionInfo;
 import android.content.pm.PackageManager;
+import android.os.Process;
 import android.os.UserHandle;
 import android.text.TextUtils;
 
@@ -225,7 +228,7 @@ public class InstallSessionHelper implements SafeCloseable {
                 && !promiseIconAddedForId(sessionInfo.getSessionId())) {
             // In case of unarchival, we do not want to add a workspace promise icon if one is
             // not already present. For general app installations however, we do support it.
-            if (!Flags.enableSupportForArchiving() || !sessionInfo.isUnarchival()) {
+            if (ATLEAST_V && (!Flags.enableSupportForArchiving() || !sessionInfo.isUnarchival())) {
                 FileLog.d(LOG, "Adding package name to install queue: "
                         + sessionInfo.getAppPackageName());
 
@@ -240,7 +243,9 @@ public class InstallSessionHelper implements SafeCloseable {
 
     public boolean verifySessionInfo(@Nullable final PackageInstaller.SessionInfo sessionInfo) {
         // For archived apps we always want to show promise icons and the checks below don't apply.
-        if (Flags.enableSupportForArchiving() && sessionInfo != null
+        if (Flags.enableSupportForArchiving()
+                && sessionInfo != null
+                && ATLEAST_V
                 && sessionInfo.isUnarchival()) {
             return true;
         }
@@ -262,6 +267,6 @@ public class InstallSessionHelper implements SafeCloseable {
     }
 
     public static UserHandle getUserHandle(@NonNull final SessionInfo info) {
-        return info.getUser();
+        return Utilities.ATLEAST_Q ? info.getUser() : Process.myUserHandle();
     }
 }

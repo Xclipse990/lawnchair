@@ -42,7 +42,7 @@ allprojects {
     }
 
     plugins.withId('com.google.protobuf') {
-        def protocVersion = '4.29.1'
+        def protocVersion = '4.29.2'
         protobuf {
             // Configure the protoc executable
             protoc {
@@ -78,7 +78,7 @@ allprojects {
 
     ext {
         FRAMEWORK_PREBUILTS_DIR = "$rootDir/prebuilts/libs"
-        daggerVersion = '2.53'
+        daggerVersion = '2.53.1'
 
         addFrameworkJar = { String name ->
             def frameworkJar = new File(FRAMEWORK_PREBUILTS_DIR, name)
@@ -126,7 +126,7 @@ final def ciRunNumber = System.getenv("GITHUB_RUN_NUMBER") ?: ""
 final def isReleaseBuild = ciBuild && ciRef.contains("beta")
 final def devReleaseName = ciBuild ? "Dev.(#${ciRunNumber})" : "Dev.(${buildCommit})"
 final def version = "15"
-final def releaseName = "Beta 3"
+final def releaseName = "Beta 1"
 final def versionDisplayName = "${version}.${isReleaseBuild ? releaseName : devReleaseName}"
 final def majorVersion = versionDisplayName.split("\\.")[0]
 
@@ -136,9 +136,9 @@ final def quickstepMaxSdk = "35"
 android {
     namespace "com.android.launcher3"
     defaultConfig {
-        // Lawnchair Launcher 14.0 Beta 3
+        // Lawnchair Launcher 15.0 Beta 1
         // See CONTRIBUTING.md#versioning-scheme
-        versionCode 15_00_00_00
+        versionCode 15_00_02_01
         versionName "${versionDisplayName}"
         buildConfigField "String", "VERSION_DISPLAY_NAME", "\"${versionDisplayName}\""
         buildConfigField "String", "MAJOR_VERSION", "\"${majorVersion}\""
@@ -210,6 +210,16 @@ android {
     buildTypes {
         all {
             signingConfig releaseSigning
+
+            applicationVariants.configureEach { variant ->
+                variant.outputs.configureEach {
+                    def channel = variant.productFlavors.last().name
+                    // Override signingConfig to debug if the "nightly" flavor is selected
+                    if (channel.any { it == "nightly" }) {
+                        signingConfig = signingConfigs.debug
+                    }
+                }
+            }
             pseudoLocalesEnabled true
         }
 
@@ -253,6 +263,11 @@ android {
             dimension "channel"
         }
 
+        nightly {
+            applicationId 'app.lawnchair.nightly'
+            dimension "channel"
+        }
+
         play {
             applicationId "app.lawnchair.play"
             dimension "channel"
@@ -288,6 +303,10 @@ android {
         }
 
         lawnWithQuickstepGithub {
+            manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
+        }
+
+        lawnWithQuickstepNightly {
             manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
         }
 
@@ -372,7 +391,7 @@ dependencies {
     implementation 'com.github.ChickenHook:RestrictionBypass:2.2'
     implementation 'dev.rikka.tools.refine:runtime:4.4.0'
 
-    implementation platform("androidx.compose:compose-bom:2024.11.00")
+    implementation platform("androidx.compose:compose-bom:2024.12.01")
     implementation "androidx.compose.ui:ui"
     implementation "androidx.compose.ui:ui-util"
     debugImplementation "androidx.compose.ui:ui-tooling"
@@ -390,7 +409,7 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:2.2.0"
     implementation "androidx.palette:palette-ktx:1.0.0"
     implementation "androidx.slice:slice-core:1.1.0-alpha02"
-    def accompanistVersion = '0.36.0'
+    def accompanistVersion = '0.37.0'
     implementation "com.google.accompanist:accompanist-adaptive:$accompanistVersion"
     implementation "com.google.accompanist:accompanist-drawablepainter:$accompanistVersion"
     implementation "com.google.accompanist:accompanist-permissions:$accompanistVersion"
@@ -418,10 +437,10 @@ dependencies {
     // Persian Date
     implementation 'com.github.samanzamani:PersianDate:1.7.1'
 
-    implementation 'com.airbnb.android:lottie:6.6.1'
+    implementation 'com.airbnb.android:lottie:6.6.2'
 
     // Compose drag and drop library
-    implementation 'sh.calvin.reorderable:reorderable:2.4.0'
+    implementation 'sh.calvin.reorderable:reorderable:2.4.2'
 
     // Smartspacer
     implementation('com.kieronquinn.smartspacer:sdk-client:1.0.11') {
@@ -447,7 +466,7 @@ spotless {
     kotlin {
         target("lawnchair/src/**/*.kt")
         ktlint().customRuleSets([
-            "io.nlopez.compose.rules:ktlint:0.4.19",
+            "io.nlopez.compose.rules:ktlint:0.4.22",
         ]).editorConfigOverride([
             "ktlint_compose_compositionlocal-allowlist": "disabled",
             "ktlint_compose_lambda-param-event-trailing": "disabled",

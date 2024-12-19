@@ -35,6 +35,7 @@ import android.graphics.RectF
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Build
 import android.os.Looper
 import android.provider.OpenableColumns
 import android.util.Log
@@ -293,5 +294,24 @@ fun blurBitmap(source: Bitmap, percent: Int, factorThreshold: Int = 25): Bitmap 
     } catch (e: Exception) {
         Log.e("LawnchairUtil", "Error bluring bitmap: $e")
         return source
+    }
+}
+
+fun getSignatureHash(context: Context, packageName: String): Long? {
+    return try {
+        val packageInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            context.packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNING_CERTIFICATES)
+        } else {
+            context.packageManager.getPackageInfo(packageName, PackageManager.GET_SIGNATURES)
+        }
+
+        val signatures = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            packageInfo.signingInfo?.apkContentsSigners
+        } else {
+            packageInfo.signatures
+        }
+        signatures?.firstOrNull()?.hashCode()?.toLong()
+    } catch (_: PackageManager.NameNotFoundException) {
+        null
     }
 }
