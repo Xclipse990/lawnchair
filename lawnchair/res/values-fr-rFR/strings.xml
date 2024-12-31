@@ -406,6 +406,8 @@
     <string name="status_bar_label">Barre d\'état</string>
     <string name="show_status_bar">Afficher la barre d\'état</string>
     <string name="dark_status_bar_label">Barre d\'état sombre</string>
+    <string name="status_bar_clock_label">Horloge de la barre d\'état</string>
+    <string name="status_bar_clock_description">Masquer dynamiquement l\'horloge de la barre d\'état sur le premier écran</string>
     <string name="home_screen_text_color">Couleur du texte</string>
     <string name="color_light">Clair</string>
     <string name="color_dark">Sombre</string>
@@ -427,6 +429,11 @@
     <string name="corner_radius_label">Rayon d\'angle</string>
     <string name="apply_accent_color_label">Appliquer la couleur d\'accentuation</string>
     <string name="search_provider">Fournisseur des résultats de recherche</string>
+    <string name="hotseat_background">Afficher l\'arrière-plan</string>
+    <string name="hotseat_bg_horizontal_inset_left">Marge horizontale (gauche)</string>
+    <string name="hotseat_bg_horizontal_inset_right">Marge horizontale (droite)</string>
+    <string name="hotseat_bg_vertical_inset_top">Marge verticale (haut)</string>
+    <string name="hotseat_bg_vertical_inset_bottom">Marge verticale (bas)</string>
     <string name="dock_icons">Icônes dans le dock</string>
     <string name="hotseat_bottom_space_label">Décalage vers le haut</string>
     <!-- Search providers -->

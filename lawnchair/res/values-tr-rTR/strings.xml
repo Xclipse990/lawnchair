@@ -406,6 +406,8 @@
     <string name="status_bar_label">Durum çubuğu</string>
     <string name="show_status_bar">Durum çubuğunu göster</string>
     <string name="dark_status_bar_label">Karanlık durum çubuğu</string>
+    <string name="status_bar_clock_label">Status bar clock</string>
+    <string name="status_bar_clock_description">Dynamically hide status bar clock in first screen</string>
     <string name="home_screen_text_color">Metin rengi</string>
     <string name="color_light">Aydınlık</string>
     <string name="color_dark">Karanlık</string>
@@ -427,6 +429,11 @@
     <string name="corner_radius_label">Köşe yarıçapı</string>
     <string name="apply_accent_color_label">Vurgu rengini uygula</string>
     <string name="search_provider">Arama sağlayıcısı</string>
+    <string name="hotseat_background">Show background</string>
+    <string name="hotseat_bg_horizontal_inset_left">Horizontal inset (Left)</string>
+    <string name="hotseat_bg_horizontal_inset_right">Horizontal inset (Right)</string>
+    <string name="hotseat_bg_vertical_inset_top">Vertical inset (Top)</string>
+    <string name="hotseat_bg_vertical_inset_bottom">Vertical inset (Bottom)</string>
     <string name="dock_icons">Alt sıra simgeleri</string>
     <string name="hotseat_bottom_space_label">Alt dolgu</string>
     <!-- Search providers -->

@@ -149,6 +149,7 @@ import app.lawnchair.preferences2.PreferenceManager2;
 import app.lawnchair.smartspace.SmartspaceAppWidgetProvider;
 import app.lawnchair.smartspace.model.LawnchairSmartspace;
 import app.lawnchair.smartspace.model.SmartspaceMode;
+import app.lawnchair.theme.drawable.DrawableTokens;
 import app.lawnchair.util.LawnchairUtilsKt;
 
 /**
@@ -351,20 +352,6 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         setMotionEventSplittingEnabled(true);
         setOnTouchListener(new WorkspaceTouchListener(mLauncher, this));
         mStatsLogManager = StatsLogManager.newInstance(context);
-
-        if (mPreferenceManger.getEnableWallpaperBlur().get() && mWallpaperManager.getDrawable() != null) {
-            var blurWallpaper = mPreferenceManger.getWallpaperBlur().get();
-            var blurThreshold = mPreferenceManger.getWallpaperBlurFactorThreshold().get();
-            var wallpaperBitmap = mWallpaperManager.getDrawable();
-            try {
-                mWallpaperManager.setBitmap(
-                        LawnchairUtilsKt.blurBitmap(toBitmap(wallpaperBitmap), blurWallpaper, blurThreshold), null,
-                        true, WallpaperManager.FLAG_SYSTEM);
-                mWallpaperManager.forgetLoadedWallpaper();
-            } catch (Exception ex) {
-                Log.e(TAG, "error failed bluring wallpaper");
-            }
-        }
     }
 
     @Override
@@ -632,7 +619,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     }
 
     public void updateStatusbarClock() {
-        if (mCurrentPage == 0) {
+        if (mCurrentPage == 0 && PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getStatusBarClock())) {
             LawnchairAppKt.getLawnchairApp(mLauncher).hideClockInStatusBar();
         } else {
             LawnchairAppKt.getLawnchairApp(mLauncher).restoreClockInStatusBar();
@@ -761,7 +748,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
     public CellLayout insertNewWorkspaceScreen(int screenId, int insertIndex) {
         if (mWorkspaceScreens.containsKey(screenId)) {
-            throw new RuntimeException("Screen id " + screenId + " already exists!");
+            Log.w(TAG, "Screen id " + screenId + " already exists, skipping insertion");
+            return mWorkspaceScreens.get(screenId);
         }
 
         // Inflate the cell layout, but do not add it automatically so that we can get

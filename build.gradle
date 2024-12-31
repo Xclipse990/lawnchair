@@ -78,7 +78,7 @@ allprojects {
 
     ext {
         FRAMEWORK_PREBUILTS_DIR = "$rootDir/prebuilts/libs"
-        daggerVersion = '2.53.1'
+        daggerVersion = '2.54'
 
         addFrameworkJar = { String name ->
             def frameworkJar = new File(FRAMEWORK_PREBUILTS_DIR, name)
@@ -378,7 +378,7 @@ dependencies {
     implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell-15.jar')
     withQuickstepCompileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'framework-15.jar')
 
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.3'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'
 
     implementation 'androidx.profileinstaller:profileinstaller:1.4.1'
     baselineProfile projects.baselineProfile
@@ -386,7 +386,7 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:1.3.2"
     implementation "androidx.preference:preference-ktx:1.2.1"
 
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3'
     implementation 'com.github.ChickenHook:RestrictionBypass:2.2'
     implementation 'dev.rikka.tools.refine:runtime:4.4.0'
@@ -443,11 +443,11 @@ dependencies {
     implementation 'sh.calvin.reorderable:reorderable:2.4.2'
 
     // Smartspacer
-    implementation('com.kieronquinn.smartspacer:sdk-client:1.0.11') {
+    implementation('com.kieronquinn.smartspacer:sdk-client:1.1') {
         exclude group: "com.github.skydoves", module: "balloon"
     }
 
-    implementation("com.github.android:renderscript-intrinsics-replacement-toolkit:b6363490c3")
+    implementation 'io.github.hokofly:hoko-blur:1.5.3'
 }
 
 ksp {

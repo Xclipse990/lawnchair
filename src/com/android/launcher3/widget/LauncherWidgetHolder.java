@@ -32,6 +32,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
+import android.util.Log;
 import android.util.SparseArray;
 import android.widget.Toast;
 
@@ -114,7 +115,7 @@ public class LauncherWidgetHolder {
             mWidgetHost.startListening();
         } catch (Exception e) {
             if (!Utilities.isBinderSizeError(e)) {
-                throw new RuntimeException(e);
+                return;
             }
             // We're willing to let this slide. The exception is being caused by the list of
             // RemoteViews which is being passed back. The startListening relationship will
@@ -237,6 +238,22 @@ public class LauncherWidgetHolder {
         } catch (ActivityNotFoundException | SecurityException e) {
             Toast.makeText(activity, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
             sendActionCancelled(activity, requestCode);
+        } catch (IllegalArgumentException e) {
+            // Widget ID became invalid, possibly due to two-step configuration some cases
+            Log.e(this.getClass().getName(), "Widget ID became invalid during configuration", e);
+            handleInvalidWidgetId(activity, widgetId, requestCode);
+        }
+    }
+
+    private void handleInvalidWidgetId(BaseDraggingActivity activity, int widgetId, int requestCode) {
+        // Remove the invalid widget
+        deleteAppWidgetId(widgetId);
+
+        int newWidgetId = allocateAppWidgetId();
+        if (newWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
+            startConfigActivity(activity, newWidgetId, requestCode);
+        } else {
+            sendActionCancelled(activity, requestCode);
         }
     }
 
@@ -271,7 +288,9 @@ public class LauncherWidgetHolder {
         // Must allow background activity start for U.
         Utilities.allowBGLaunch(activityOptionsWrapper.options);
         Bundle bundle = activityOptionsWrapper.toBundle();
-        bundle.putInt(KEY_SPLASH_SCREEN_STYLE, SPLASH_SCREEN_STYLE_EMPTY);
+        if (Utilities.ATLEAST_S) {
+            bundle.putInt(KEY_SPLASH_SCREEN_STYLE, SPLASH_SCREEN_STYLE_EMPTY);
+        }
         return bundle;
     }
 
@@ -306,8 +325,15 @@ public class LauncherWidgetHolder {
         if (!WIDGETS_ENABLED) {
             return;
         }
-        mWidgetHost.stopListening();
-        setListeningFlag(false);
+        try {
+            if (mWidgetHost != null) {
+                mWidgetHost.stopListening();
+            }
+        } catch (Exception e) {
+            Log.e("LauncherWidgetHolder", "Error stopping widget listening", e);
+        } finally {
+            setListeningFlag(false);
+        }
     }
 
     protected void setListeningFlag(final boolean isListening) {

@@ -283,6 +283,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import app.lawnchair.LawnchairApp;
@@ -1531,8 +1532,10 @@ public class Launcher extends StatefulActivity<LauncherState>
         if (appWidgetInfo == null) {
             appWidgetInfo = mAppWidgetManager.getLauncherAppWidgetInfo(appWidgetId,
                     itemInfo.getTargetComponent());
-            if (appWidgetInfo == null)
+            if (appWidgetInfo == null){
+                mAppWidgetHolder.deleteAppWidgetId(appWidgetId);
                 return;
+            }
         }
 
         if (hostView == null && !showPendingWidget) {
@@ -2233,6 +2236,7 @@ public class Launcher extends StatefulActivity<LauncherState>
             BubbleTextView btv = (BubbleTextView) v;
             btv.setStayPressed(true);
             result.add(() -> btv.setStayPressed(false));
+            btv.resetIconScale(true);
         }
         return result;
     }
@@ -2326,7 +2330,7 @@ public class Launcher extends StatefulActivity<LauncherState>
     @Override
     public void bindItems(final List<ItemInfo> items, final boolean forceAnimateIcons) {
         bindInflatedItems(items.stream().map(i -> Pair.create(
-                i, getItemInflater().inflateItem(i, getModelWriter()))).toList(),
+                i, getItemInflater().inflateItem(i, getModelWriter()))).collect(Collectors.toList()),
                 forceAnimateIcons ? new AnimatorSet() : null);
     }
 

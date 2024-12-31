@@ -1,5 +1,7 @@
 package com.android.launcher3;
 // TODO(b/303773055): Remove the annotation after access issue is resolved.
+import androidx.core.os.BuildCompat;
+
 import com.android.quickstep.util.DeviceConfigHelper;
 
 import java.nio.file.Files;
@@ -107,9 +109,9 @@ public final class FeatureFlagsImpl implements FeatureFlags {
             enableSmartspaceAsAWidget =
                     properties.getBoolean(Flags.FLAG_ENABLE_SMARTSPACE_AS_A_WIDGET, false);
             enableSmartspaceRemovalToggle =
-                    properties.getBoolean(Flags.FLAG_ENABLE_SMARTSPACE_REMOVAL_TOGGLE, false);
+                    properties.getBoolean(Flags.FLAG_ENABLE_SMARTSPACE_REMOVAL_TOGGLE, true);
             enableSupportForArchiving =
-                    properties.getBoolean(Flags.FLAG_ENABLE_SUPPORT_FOR_ARCHIVING, true);
+                    properties.getBoolean(Flags.FLAG_ENABLE_SUPPORT_FOR_ARCHIVING, BuildCompat.isAtLeastU());
             enableTabletTwoPanePickerV2 =
                     properties.getBoolean(Flags.FLAG_ENABLE_TABLET_TWO_PANE_PICKER_V2, false);
             enableTaskbarCustomization =
@@ -150,19 +152,19 @@ public final class FeatureFlagsImpl implements FeatureFlags {
         try {
             var properties = DeviceConfigHelper.Companion.getPrefs();
             enablePrivateSpace =
-                    properties.getBoolean(Flags.FLAG_ENABLE_PRIVATE_SPACE, true);
+                    properties.getBoolean(Flags.FLAG_ENABLE_PRIVATE_SPACE, BuildCompat.isAtLeastU());
             privateSpaceAddFloatingMaskView =
-                    properties.getBoolean(Flags.FLAG_PRIVATE_SPACE_ADD_FLOATING_MASK_VIEW, false);
+                    properties.getBoolean(Flags.FLAG_PRIVATE_SPACE_ADD_FLOATING_MASK_VIEW, BuildCompat.isAtLeastU());
             privateSpaceAnimation =
-                    properties.getBoolean(Flags.FLAG_PRIVATE_SPACE_ANIMATION, true);
+                    properties.getBoolean(Flags.FLAG_PRIVATE_SPACE_ANIMATION, BuildCompat.isAtLeastU());
             privateSpaceAppInstallerButton =
-                    properties.getBoolean(Flags.FLAG_PRIVATE_SPACE_APP_INSTALLER_BUTTON, true);
+                    properties.getBoolean(Flags.FLAG_PRIVATE_SPACE_APP_INSTALLER_BUTTON, BuildCompat.isAtLeastU());
             privateSpaceRestrictAccessibilityDrag =
-                    properties.getBoolean(Flags.FLAG_PRIVATE_SPACE_RESTRICT_ACCESSIBILITY_DRAG, true);
+                    properties.getBoolean(Flags.FLAG_PRIVATE_SPACE_RESTRICT_ACCESSIBILITY_DRAG, BuildCompat.isAtLeastU());
             privateSpaceRestrictItemDrag =
-                    properties.getBoolean(Flags.FLAG_PRIVATE_SPACE_RESTRICT_ITEM_DRAG, true);
+                    properties.getBoolean(Flags.FLAG_PRIVATE_SPACE_RESTRICT_ITEM_DRAG, BuildCompat.isAtLeastU());
             privateSpaceSysAppsSeparation =
-                    properties.getBoolean(Flags.FLAG_PRIVATE_SPACE_SYS_APPS_SEPARATION, true);
+                    properties.getBoolean(Flags.FLAG_PRIVATE_SPACE_SYS_APPS_SEPARATION, BuildCompat.isAtLeastU());
         } catch (NullPointerException e) {
             throw new RuntimeException(
                     "Cannot read value from namespace launcher_search "
@@ -303,7 +305,7 @@ public final class FeatureFlagsImpl implements FeatureFlags {
 
     @Override
     public boolean enableGridMigrationFix() {
-        return true;
+        return false;
 
     }
 
@@ -360,7 +362,7 @@ public final class FeatureFlagsImpl implements FeatureFlags {
 
     @Override
     public boolean enableNarrowGridRestore() {
-        return true;
+        return false;
 
     }
 

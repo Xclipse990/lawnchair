@@ -176,10 +176,16 @@ class LawnchairLauncher : QuickstepLauncher() {
             }
         }.launchIn(scope = lifecycleScope)
 
-        if (LawnchairApp.isRecentsEnabled) {
-            launcher.stateManager.addStateListener(statusBarClockListener)
-        } else {
-            launcher.stateManager.removeStateListener(statusBarClockListener)
+        preferenceManager2.statusBarClock.get().onEach {
+            with(launcher.stateManager) {
+                if (it) {
+                    addStateListener(statusBarClockListener)
+                } else {
+                    removeStateListener(statusBarClockListener)
+                    // Make sure status bar clock is restored when the preference is toggled off
+                    LawnchairApp.instance.restoreClockInStatusBar()
+                }
+            }
         }
         preferenceManager2.rememberPosition.get().onEach {
             with(launcher.stateManager) {
@@ -409,8 +415,7 @@ class LawnchairLauncher : QuickstepLauncher() {
      */
     private fun reloadIconsIfNeeded() {
         if (
-            preferenceManager2.alwaysReloadIcons.firstBlocking() &&
-            (prefs.iconPackPackage.get().isNotEmpty() || prefs.themedIconPackPackage.get().isNotEmpty())
+            preferenceManager2.alwaysReloadIcons.firstBlocking()
         ) {
             LauncherAppState.getInstance(this).reloadIcons()
         }
