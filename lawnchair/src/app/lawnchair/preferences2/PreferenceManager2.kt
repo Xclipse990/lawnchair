@@ -42,6 +42,7 @@ import app.lawnchair.smartspace.model.SmartspaceTimeFormat
 import app.lawnchair.theme.color.ColorMode
 import app.lawnchair.theme.color.ColorOption
 import app.lawnchair.theme.color.ColorStyle
+import app.lawnchair.ui.popup.LauncherOptionsPopup
 import app.lawnchair.ui.preferences.components.HiddenAppsInSearch
 import app.lawnchair.util.kotlinxJson
 import com.android.launcher3.InvariantDeviceProfile
@@ -62,7 +63,9 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.serialization.encodeToString
 
-class PreferenceManager2 private constructor(private val context: Context) : PreferenceManager, SafeCloseable {
+class PreferenceManager2 private constructor(private val context: Context) :
+    PreferenceManager,
+    SafeCloseable {
 
     private val scope = MainScope()
     private val resourceProvider = DynamicResource.provider(context)
@@ -128,6 +131,22 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         save = ColorOption::toString,
         onSet = { reloadHelper.restart() },
         defaultValue = ColorOption.fromString(context.getString(R.string.config_default_accent_color)),
+    )
+
+    val hotseatBackgroundColor = preference(
+        key = stringPreferencesKey(name = "hotseat_bg_color"),
+        parse = ColorOption::fromString,
+        save = ColorOption::toString,
+        onSet = { reloadHelper.reloadGrid() },
+        defaultValue = ColorOption.fromString(context.getString(R.string.config_default_hotseat_bg_color)),
+    )
+
+    val appDrawerBackgroundColor = preference(
+        key = stringPreferencesKey(name = "app_drawer_bg_color"),
+        parse = ColorOption::fromString,
+        save = ColorOption::toString,
+        onSet = { reloadHelper.recreate() },
+        defaultValue = ColorOption.fromString(context.getString(R.string.config_default_app_drawer_bg_color)),
     )
 
     val notificationDotColor = preference(
@@ -254,6 +273,12 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
     val lockHomeScreen = preference(
         key = booleanPreferencesKey(name = "lock_home_screen"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_lock_home_screen),
+    )
+
+    val launcherPopupOrder = preference(
+        key = stringPreferencesKey(name = "launcher_popup_order"),
+        defaultValue = LauncherOptionsPopup.DEFAULT_ORDER,
+        onSet = { reloadHelper.reloadGrid() },
     )
 
     val lockHomeScreenButtonOnPopUp = preference(
@@ -388,6 +413,12 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
     val homeIconLabelFolderSizeFactor = preference(
         key = floatPreferencesKey(name = "home_icon_label_folder_size_factor"),
         defaultValue = resourceProvider.getFloat(R.dimen.config_default_home_icon_label_folder_size_factor),
+        onSet = { reloadHelper.reloadGrid() },
+    )
+
+    val pageIndicatorHeightFactor = preference(
+        key = floatPreferencesKey(name = "page_indicator_height_factor"),
+        defaultValue = resourceProvider.getFloat(R.dimen.page_indicator_height_factor),
         onSet = { reloadHelper.reloadGrid() },
     )
 

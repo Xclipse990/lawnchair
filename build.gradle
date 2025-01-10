@@ -16,7 +16,7 @@ plugins {
     id 'app.cash.licensee' version "1.12.0"
     id 'dev.rikka.tools.refine' version "4.4.0"
     id 'org.gradle.android.cache-fix' version '3.0.1'
-    id 'com.diffplug.spotless' version '6.25.0'
+    id 'com.diffplug.spotless' version '7.0.1'
 }
 
 
@@ -42,7 +42,7 @@ allprojects {
     }
 
     plugins.withId('com.google.protobuf') {
-        def protocVersion = '4.29.2'
+        def protocVersion = '4.29.3'
         protobuf {
             // Configure the protoc executable
             protoc {
@@ -78,7 +78,7 @@ allprojects {
 
     ext {
         FRAMEWORK_PREBUILTS_DIR = "$rootDir/prebuilts/libs"
-        daggerVersion = '2.54'
+        daggerVersion = '2.55'
 
         addFrameworkJar = { String name ->
             def frameworkJar = new File(FRAMEWORK_PREBUILTS_DIR, name)
@@ -387,7 +387,7 @@ dependencies {
     implementation "androidx.preference:preference-ktx:1.2.1"
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1'
-    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0'
     implementation 'com.github.ChickenHook:RestrictionBypass:2.2'
     implementation 'dev.rikka.tools.refine:runtime:4.4.0'
 

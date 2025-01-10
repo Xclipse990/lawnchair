@@ -76,8 +76,7 @@ private inline fun StretchEdgeEffect.draw(
     }
 }
 
-private class NestedScrollStretchConnection(context: Context, invalidate: Runnable) :
-    NestedScrollConnection {
+private class NestedScrollStretchConnection(context: Context, invalidate: Runnable) : NestedScrollConnection {
 
     var height = 0
 

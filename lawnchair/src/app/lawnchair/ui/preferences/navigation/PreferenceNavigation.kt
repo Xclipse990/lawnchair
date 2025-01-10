@@ -40,6 +40,7 @@ import app.lawnchair.ui.preferences.destinations.IconPackPreferences
 import app.lawnchair.ui.preferences.destinations.IconPickerPreference
 import app.lawnchair.ui.preferences.destinations.IconShapePreference
 import app.lawnchair.ui.preferences.destinations.IconShapeRoutes
+import app.lawnchair.ui.preferences.destinations.LauncherPopupPreference
 import app.lawnchair.ui.preferences.destinations.PickAppForGesture
 import app.lawnchair.ui.preferences.destinations.PreferencesDashboard
 import app.lawnchair.ui.preferences.destinations.QuickstepPreferences
@@ -103,6 +104,7 @@ fun InnerNavigation(
         navigation(route = Routes.HOME_SCREEN, startDestination = "main") {
             composable(route = "main") { HomeScreenPreferences() }
             composable(route = HomeScreenRoutes.GRID) { HomeScreenGridPreferences() }
+            composable(route = HomeScreenRoutes.POPUP_EDITOR) { LauncherPopupPreference() }
         }
 
         navigation(route = Routes.DOCK, startDestination = "main") {
@@ -118,7 +120,16 @@ fun InnerNavigation(
             composable(route = AppDrawerRoutes.HIDDEN_APPS) { HiddenAppsPreferences() }
         }
 
-        composable(route = Routes.SEARCH) { SearchPreferences() }
+        composable(
+            route = "${Routes.SEARCH}/{selectedId}",
+            arguments = listOf(
+                navArgument("selectedId") { type = NavType.IntType },
+            ),
+        ) { backStackEntry ->
+            val args = backStackEntry.arguments!!
+            val selectedId = args.getInt("selectedId")
+            SearchPreferences(currentTab = selectedId)
+        }
         composable(route = Routes.FOLDERS) { FolderPreferences() }
 
         composable(route = Routes.GESTURES) { GesturePreferences() }

@@ -29,7 +29,9 @@ import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.MainThreadInitializedObject
 import com.android.launcher3.util.SafeCloseable
 
-class PreferenceManager private constructor(private val context: Context) : BasePreferenceManager(context), SafeCloseable {
+class PreferenceManager private constructor(private val context: Context) :
+    BasePreferenceManager(context),
+    SafeCloseable {
     private val idp get() = InvariantDeviceProfile.INSTANCE.get(context)
     private val reloadIcons = { idp.onPreferencesChanged(context) }
     private val reloadGrid: () -> Unit = { idp.onPreferencesChanged(context) }
@@ -94,7 +96,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
 
     val allAppBulkIconLoading = BoolPref("pref_allapps_bulk_icon_loading", false, recreate)
 
-    val themedIcons = BoolPref("themed_icons", true, recreate)
+    val themedIcons = BoolPref("themed_icons", false, recreate)
     val drawerThemedIcons = BoolPref("drawer_themed_icons", false, recreate)
     val tintIconPackBackgrounds = BoolPref("tint_icon_pack_backgrounds", false, recreate)
 
@@ -106,6 +108,8 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val hotseatBGVerticalInsetTop = IntPref("pref_hotseatBGVRinsetTop", 0, recreate)
     val hotseatBGHorizontalInsetRight = IntPref("pref_hotseatBGHRinsetRight", 0, recreate)
     val hotseatBGVerticalInsetBottom = IntPref("pref_hotseatBGVRinsetBottom", 0, recreate)
+
+    val hotseatBGAlpha = IntPref("pref_hotseatBGTransparency", 100, recreate)
 
     val enableWallpaperBlur = BoolPref("pref_enableWallpaperBlur", false, recreate)
     val wallpaperBlur = IntPref("pref_wallpaperBlur", 25, recreate)
