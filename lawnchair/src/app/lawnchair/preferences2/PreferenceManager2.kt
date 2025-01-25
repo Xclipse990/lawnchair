@@ -61,7 +61,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.serialization.encodeToString
 
 class PreferenceManager2 private constructor(private val context: Context) :
     PreferenceManager,
@@ -273,6 +272,16 @@ class PreferenceManager2 private constructor(private val context: Context) :
     val lockHomeScreen = preference(
         key = booleanPreferencesKey(name = "lock_home_screen"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_lock_home_screen),
+        onSet = {
+            if (it) {
+                LauncherOptionsPopup.disableUnavailableItems(context)
+            }
+        },
+    )
+
+    val legacyPopupOptionsMigrated = preference(
+        key = booleanPreferencesKey(name = "legacy_popup_options_migrated"),
+        defaultValue = false,
     )
 
     val launcherPopupOrder = preference(

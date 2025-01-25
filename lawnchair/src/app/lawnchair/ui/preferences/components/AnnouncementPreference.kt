@@ -109,7 +109,7 @@ private fun AnnouncementItem(
         AnnouncementItemContent(
             text = announcement.text,
             url = announcement.url,
-            icon = announcement.getIcon(),
+            icon = announcement.iconVector,
             onClose = onClose,
         )
     }
@@ -178,7 +178,7 @@ private fun AnnouncementItemContent(
     }
 }
 
-private fun calculateAlpha(progress: Float): Float {
+fun calculateAlpha(progress: Float): Float {
     return when {
         progress < 0.5f -> 1f // Fully opaque until halfway
         else -> 1f - (progress - 0.5f) * 2 // Fade out linearly from halfway to the end
